@@ -1,253 +1,267 @@
 # Generated from compiler/walnut.g4 by ANTLR 4.7
 from antlr4 import *
-if __name__ is not None and "." in __name__:
-    from .walnutParser import walnutParser
-else:
-    from walnutParser import walnutParser
 
 # This class defines a complete listener for a parse tree produced by walnutParser.
 class walnutListener(ParseTreeListener):
 
     # Enter a parse tree produced by walnutParser#program.
-    def enterProgram(self, ctx:walnutParser.ProgramContext):
+    def enterProgram(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#program.
-    def exitProgram(self, ctx:walnutParser.ProgramContext):
+    def exitProgram(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#global_variables.
-    def enterGlobal_variables(self, ctx:walnutParser.Global_variablesContext):
+    def enterGlobal_variables(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#global_variables.
-    def exitGlobal_variables(self, ctx:walnutParser.Global_variablesContext):
+    def exitGlobal_variables(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#classes.
-    def enterClasses(self, ctx:walnutParser.ClassesContext):
+    def enterClasses(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#classes.
-    def exitClasses(self, ctx:walnutParser.ClassesContext):
+    def exitClasses(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#class_body.
-    def enterClass_body(self, ctx:walnutParser.Class_bodyContext):
+    def enterClass_body(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#class_body.
-    def exitClass_body(self, ctx:walnutParser.Class_bodyContext):
+    def exitClass_body(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#class_attributes.
-    def enterClass_attributes(self, ctx:walnutParser.Class_attributesContext):
+    def enterClass_attributes(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#class_attributes.
-    def exitClass_attributes(self, ctx:walnutParser.Class_attributesContext):
+    def exitClass_attributes(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#class_methods.
-    def enterClass_methods(self, ctx:walnutParser.Class_methodsContext):
+    def enterClass_methods(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#class_methods.
-    def exitClass_methods(self, ctx:walnutParser.Class_methodsContext):
+    def exitClass_methods(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#initializer.
-    def enterInitializer(self, ctx:walnutParser.InitializerContext):
+    def enterInitializer(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#initializer.
-    def exitInitializer(self, ctx:walnutParser.InitializerContext):
+    def exitInitializer(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#method_declaration.
-    def enterMethod_declaration(self, ctx:walnutParser.Method_declarationContext):
+    def enterMethod_declaration(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#method_declaration.
-    def exitMethod_declaration(self, ctx:walnutParser.Method_declarationContext):
+    def exitMethod_declaration(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#functions.
-    def enterFunctions(self, ctx:walnutParser.FunctionsContext):
+    def enterFunctions(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#functions.
-    def exitFunctions(self, ctx:walnutParser.FunctionsContext):
+    def exitFunctions(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#parameters.
-    def enterParameters(self, ctx:walnutParser.ParametersContext):
+    def enterParameters(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#parameters.
-    def exitParameters(self, ctx:walnutParser.ParametersContext):
+    def exitParameters(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#blocks.
-    def enterBlocks(self, ctx:walnutParser.BlocksContext):
+    def enterBlocks(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#blocks.
-    def exitBlocks(self, ctx:walnutParser.BlocksContext):
+    def exitBlocks(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#expression.
-    def enterExpression(self, ctx:walnutParser.ExpressionContext):
+    def enterExpression(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#expression.
-    def exitExpression(self, ctx:walnutParser.ExpressionContext):
+    def exitExpression(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#conditional_expression.
-    def enterConditional_expression(self, ctx:walnutParser.Conditional_expressionContext):
+    def enterConditional_expression(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#conditional_expression.
-    def exitConditional_expression(self, ctx:walnutParser.Conditional_expressionContext):
+    def exitConditional_expression(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#relational_expression.
-    def enterRelational_expression(self, ctx:walnutParser.Relational_expressionContext):
+    def enterRelational_expression(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#relational_expression.
-    def exitRelational_expression(self, ctx:walnutParser.Relational_expressionContext):
+    def exitRelational_expression(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#math_expression.
-    def enterMath_expression(self, ctx:walnutParser.Math_expressionContext):
+    def enterMath_expression(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#math_expression.
-    def exitMath_expression(self, ctx:walnutParser.Math_expressionContext):
+    def exitMath_expression(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#term.
-    def enterTerm(self, ctx:walnutParser.TermContext):
+    def enterTerm(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#term.
-    def exitTerm(self, ctx:walnutParser.TermContext):
+    def exitTerm(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#factor.
-    def enterFactor(self, ctx:walnutParser.FactorContext):
+    def enterFactor(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#factor.
-    def exitFactor(self, ctx:walnutParser.FactorContext):
+    def exitFactor(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#power_of.
-    def enterPower_of(self, ctx:walnutParser.Power_ofContext):
+    def enterPower_of(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#power_of.
-    def exitPower_of(self, ctx:walnutParser.Power_ofContext):
+    def exitPower_of(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#relop_tokens.
-    def enterRelop_tokens(self, ctx:walnutParser.Relop_tokensContext):
+    def enterRelop_tokens(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#relop_tokens.
-    def exitRelop_tokens(self, ctx:walnutParser.Relop_tokensContext):
+    def exitRelop_tokens(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#declaration_assignment.
+    def enterDeclaration_assignment(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#declaration_assignment.
+    def exitDeclaration_assignment(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#assignments.
-    def enterAssignments(self, ctx:walnutParser.AssignmentsContext):
+    def enterAssignments(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#assignments.
-    def exitAssignments(self, ctx:walnutParser.AssignmentsContext):
+    def exitAssignments(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#declaration.
-    def enterDeclaration(self, ctx:walnutParser.DeclarationContext):
+    def enterDeclaration(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#declaration.
-    def exitDeclaration(self, ctx:walnutParser.DeclarationContext):
+    def exitDeclaration(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#loops.
-    def enterLoops(self, ctx:walnutParser.LoopsContext):
+    def enterLoops(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#loops.
-    def exitLoops(self, ctx:walnutParser.LoopsContext):
+    def exitLoops(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#conditional.
-    def enterConditional(self, ctx:walnutParser.ConditionalContext):
+    def enterConditional(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#conditional.
-    def exitConditional(self, ctx:walnutParser.ConditionalContext):
+    def exitConditional(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#if_elsif_body.
-    def enterIf_elsif_body(self, ctx:walnutParser.If_elsif_bodyContext):
+    def enterIf_elsif_body(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#if_elsif_body.
-    def exitIf_elsif_body(self, ctx:walnutParser.If_elsif_bodyContext):
+    def exitIf_elsif_body(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#object_declaration.
-    def enterObject_declaration(self, ctx:walnutParser.Object_declarationContext):
+    def enterObject_declaration(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#object_declaration.
-    def exitObject_declaration(self, ctx:walnutParser.Object_declarationContext):
+    def exitObject_declaration(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#call_object_method.
-    def enterCall_object_method(self, ctx:walnutParser.Call_object_methodContext):
+    def enterCall_object_method(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#call_object_method.
-    def exitCall_object_method(self, ctx:walnutParser.Call_object_methodContext):
+    def exitCall_object_method(self, ctx):
         pass
 
 
     # Enter a parse tree produced by walnutParser#var_type.
-    def enterVar_type(self, ctx:walnutParser.Var_typeContext):
+    def enterVar_type(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#var_type.
-    def exitVar_type(self, ctx:walnutParser.Var_typeContext):
+    def exitVar_type(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#constants.
+    def enterConstants(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#constants.
+    def exitConstants(self, ctx):
         pass
 
 

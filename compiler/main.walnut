@@ -1,0 +1,28 @@
+program main
+
+globals {
+  int numero
+  float un_float
+  un_float = 12
+}
+
+class Hola {
+  attributes {
+    boolean bool
+  }
+  methods {
+    func initializer (boolean hola) {
+      bool = hola
+    }
+
+    func sayHi () : string {
+      return "hello"
+    }
+  }
+}
+
+func bye () : string {
+  return "good bye"
+}
+
+Hola hola = hola.new()
