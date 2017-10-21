@@ -93,9 +93,9 @@ NOT_T : '!'|'not' ;
 AND_OP_T : '&&'|'and' ;
 OR_OP_T : '||'|'or' ;
 
-fragment WS : (' ' | '\t' | '\n' | '\r')* ;
+WS : [ \t\r\n] -> skip ;
 
-CTE_STRING_T : '".*"' ;
+CTE_STRING_T : '"'.*?'"' ;
 CTE_INT_T : DIGIT+ ;
 CTE_FLOAT_T : DIGIT.DIGIT ;
 CTE_CHAR_T : '.' ;
