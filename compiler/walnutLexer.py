@@ -1,9 +1,12 @@
-# Generated from compiler/walnut.g4 by ANTLR 4.7
+# Generated from walnut.g4 by ANTLR 4.7
 # encoding: utf-8
 from __future__ import print_function
 from antlr4 import *
 from io import StringIO
 import sys
+
+
+from vm import VM
 
 
 def serializedATN():
@@ -261,5 +264,9 @@ class walnutLexer(Lexer):
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None
+
+
+    global virtual_machine
+    virtual_machine = VM()
 
 

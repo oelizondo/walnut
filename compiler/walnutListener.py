@@ -1,5 +1,8 @@
-# Generated from compiler/walnut.g4 by ANTLR 4.7
+# Generated from walnut.g4 by ANTLR 4.7
 from antlr4 import *
+
+from vm import VM
+
 
 # This class defines a complete listener for a parse tree produced by walnutParser.
 class walnutListener(ParseTreeListener):

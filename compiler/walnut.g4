@@ -1,10 +1,19 @@
 grammar walnut;
 
+@header {
+from virtual_machine import VirtualMachine
+}
+
+@members {
+global vm
+vm = VirtualMachine()
+}
+
 program : PROGRAM_T ID_T global_variables? classes* functions* blocks*;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
-classes : (CLASS_T ID_T (EXTENDS_T ID_T)? LCB_T class_body RCB_T) ;
+classes : (CLASS_T ID_T (EXTENDS_T ID_T)?  LCB_T class_body RCB_T) {print(self)};
 
 class_body : class_attributes class_methods ;
 
@@ -21,25 +30,37 @@ functions : (FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T b
 parameters : var_type ID_T COMMA_T parameters
              | var_type ID_T ;
 
-blocks : expression | declaration_assignment | loops | conditional | object_declaration;
+blocks : expression
+         | declaration_assignment
+         | loops
+         | conditional
+         | object_declaration;
 
 expression : conditional_expression ;
 
 conditional_expression : relational_expression (OR_OP_T | AND_OP_T) conditional_expression
-                        | relational_expression ;
+                         | relational_expression ;
 
 relational_expression : math_expression relop_tokens relational_expression
                         | math_expression ;
 
-math_expression : term (PLUS_T | MINUS_T) math_expression | term;
+math_expression : term (PLUS_T | MINUS_T) math_expression
+                  | term;
 
-term : factor (MULTI_T|DIVISION_T) term | factor;
+term : factor (MULTI_T|DIVISION_T) term
+       | factor;
 
-factor : power_of POW_T factor | power_of ;
+factor : power_of POW_T factor
+         | power_of ;
 
 power_of : (MINUS_T|NOT_T)? (ID_T|constants|call_object_method|LP_T expression RP_T) ;
 
-relop_tokens : EQUAL_T | NOT_EQUAL_T | LESS_EQ_T | GREATER_EQ_T | LESS_T | GREATER_T ;
+relop_tokens : EQUAL_T
+               | NOT_EQUAL_T
+               | LESS_EQ_T
+               | GREATER_EQ_T
+               | LESS_T
+               | GREATER_T ;
 
 declaration_assignment : (declaration|assignments)+;
 
@@ -59,7 +80,10 @@ call_object_method : ID_T POINT_T ID_T LP_T parameters RP_T ;
 
 var_type : INT_T|STRING_T|FLOAT_T|BOOLEAN_T ;
 
-constants : CTE_FLOAT_T|CTE_INT_T|CTE_STRING_T|CTE_BOOL_T ;
+constants : CTE_FLOAT_T
+            |CTE_INT_T
+            |CTE_STRING_T
+            |CTE_BOOL_T ;
 
 /*
 * Lexer Rules
