@@ -1,8 +1,5 @@
-# Generated from walnut.g4 by ANTLR 4.7
+# Generated from compiler/walnut.g4 by ANTLR 4.7
 from antlr4 import *
-
-from vm import VM
-
 
 # This class defines a complete listener for a parse tree produced by walnutParser.
 class walnutListener(ParseTreeListener):
@@ -97,6 +94,24 @@ class walnutListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by walnutParser#arguments.
+    def enterArguments(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#arguments.
+    def exitArguments(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#argument.
+    def enterArgument(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#argument.
+    def exitArgument(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by walnutParser#blocks.
     def enterBlocks(self, ctx):
         pass
@@ -169,6 +184,15 @@ class walnutListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by walnutParser#atomic.
+    def enterAtomic(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#atomic.
+    def exitAtomic(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by walnutParser#relop_tokens.
     def enterRelop_tokens(self, ctx):
         pass
@@ -187,6 +211,33 @@ class walnutListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by walnutParser#declaration.
+    def enterDeclaration(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#declaration.
+    def exitDeclaration(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#var_declaration.
+    def enterVar_declaration(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#var_declaration.
+    def exitVar_declaration(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#array_declaration.
+    def enterArray_declaration(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#array_declaration.
+    def exitArray_declaration(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by walnutParser#assignments.
     def enterAssignments(self, ctx):
         pass
@@ -196,12 +247,30 @@ class walnutListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by walnutParser#declaration.
-    def enterDeclaration(self, ctx):
+    # Enter a parse tree produced by walnutParser#array_assignment.
+    def enterArray_assignment(self, ctx):
         pass
 
-    # Exit a parse tree produced by walnutParser#declaration.
-    def exitDeclaration(self, ctx):
+    # Exit a parse tree produced by walnutParser#array_assignment.
+    def exitArray_assignment(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#var_assignment.
+    def enterVar_assignment(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#var_assignment.
+    def exitVar_assignment(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#assignment_body.
+    def enterAssignment_body(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#assignment_body.
+    def exitAssignment_body(self, ctx):
         pass
 
 
@@ -247,6 +316,24 @@ class walnutListener(ParseTreeListener):
 
     # Exit a parse tree produced by walnutParser#call_object_method.
     def exitCall_object_method(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#call_function.
+    def enterCall_function(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#call_function.
+    def exitCall_function(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#call_array.
+    def enterCall_array(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#call_array.
+    def exitCall_array(self, ctx):
         pass
 
 

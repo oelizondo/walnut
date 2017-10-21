@@ -1,16 +1,58 @@
-program main
+program id;
 
-class Hola {
+globals {
+  int foo;
+  boolean var = foo;
+  string a = 123;
+}
+
+class hola extends saludo {
   attributes {
-    boolean bool
+    int cosa = 4;
+    float otra;
+    boolean cosaloca;
   }
-  methods {
-    func initializer (boolean hola) {
-      bool = hola
-    }
 
-    func sayHi () : string {
-      return "hello"
+  methods{
+    func initializer() {
+
+    }
+    func doSomething() {
+      cosa = "12434";
+      if(cosa > 55) {
+        cosa = 55;
+      }
+      else {
+        cosa = 0;
+      }
     }
   }
 }
+
+func test(int id1, string id3, float id4) : string {
+  int array[9];
+  float a = array[5];
+  int b = a/(12*555-344-bf*(asd-tr^asd)-aafff-(array[4]^array[4])-id) || adde-(array[4]^array[4])-id && a/(12*555-344-bf*(asd-tr^asd));
+  return b;
+}
+
+run
+  while(asdasd == 544) {
+    if(asd){
+      if(asd) {
+        body = asd;
+      }
+      else {
+        int body = "asfasfasfafs";
+      }
+    }
+    else {
+      while(this){
+        string EverythingSGONNABEALRIGHT;
+      }
+    }
+  }
+  hola obj = hola.new(param2,param3);
+  obj.doSomething(params,id2,id3);
+  a = test(param1,param2,param3);
+end
