@@ -9,6 +9,5 @@ def main(argv):
     stream = CommonTokenStream(lexer)
     parser = walnutParser(stream)
     tree = parser.program()
-
 if __name__ == '__main__':
     main(sys.argv)
