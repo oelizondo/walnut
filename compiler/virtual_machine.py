@@ -1,4 +1,4 @@
-semantic_cube = [[[]],[[]],[[]]]
+semantic_cube = [[[0,1,2,3]],[[0,1,2,3]],[[4,5,6,7]]]
 
 class Cuadruple:
     def __init__(self, operation, left_side, right_side, result):
@@ -75,7 +75,7 @@ class FunctionDirectory:
 
     def add_function(self, header, arguments, return_type):
         func = Function(header, arguments, return_type)
-        memory.allocate_function(self.context, func)
+        # memory.allocate_function(self.context, func)
         self.functions[header] = func
 
 class ClassDirectory:

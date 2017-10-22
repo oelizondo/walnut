@@ -4,7 +4,7 @@ program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* STAR
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
-classes : (CLASS_T ID_T (EXTENDS_T ID_T)?  LCB_T class_body RCB_T) {print(self)};
+classes : (CLASS_T ID_T (EXTENDS_T ID_T)?  LCB_T class_body RCB_T) ;
 
 class_body : class_attributes class_methods ;
 
