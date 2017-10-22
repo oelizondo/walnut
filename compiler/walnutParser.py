@@ -1,4 +1,4 @@
-# Generated from compiler/walnut.g4 by ANTLR 4.7
+# Generated from walnut.g4 by ANTLR 4.7
 # encoding: utf-8
 from __future__ import print_function
 from antlr4 import *
