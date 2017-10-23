@@ -45,6 +45,7 @@ run
       else {
         int body = "asfasfasfafs";
       }
+      print(hola);
     }
     else {
       while(this){

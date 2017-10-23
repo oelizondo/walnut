@@ -125,6 +125,15 @@ class walnutListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by walnutParser#write.
+    def enterWrite(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#write.
+    def exitWrite(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by walnutParser#expression.
     def enterExpression(self, ctx):
         pass

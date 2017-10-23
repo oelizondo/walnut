@@ -38,7 +38,14 @@ arguments : argument COMMA_T arguments
 
 argument : (constants | ID_T) ;
 
-blocks : expression END_OF_STM_T | declaration_assignment | loops | conditional | object_declaration;
+blocks : expression END_OF_STM_T
+         | declaration_assignment
+         | loops
+         | conditional
+         | object_declaration
+         | write ;
+
+write : PRINT_T LP_T expression RP_T END_OF_STM_T ;
 
 expression : conditional_expression ;
 
@@ -57,7 +64,7 @@ term : factor (MULTI_T|DIVISION_T) term
 factor : power_of POW_T factor
          | power_of ;
 
-power_of : NOT_T? (atomic|LP_T expression RP_T) ;
+power_of : (NOT_T | MINUS_T )? (atomic|LP_T expression RP_T) ;
 
 atomic : (ID_T|constants|call_object_method|call_function|call_array) ;
 
@@ -134,6 +141,7 @@ WHILE_T : 'while';
 NEW_T : 'new';
 START_T : 'run' ;
 FINISH_T : 'end' ;
+PRINT_T : 'puts' ;
 
 EQUAL_T : '=='|'is' ;
 NOT_T : '!'|'not' ;
@@ -143,8 +151,8 @@ OR_OP_T : '||'|'or' ;
 WS : [ \t\r\n] -> skip ;
 
 CTE_STRING_T : '"'.*?'"' ;
-CTE_FLOAT_T : ('-')?(DIGIT)+POINT_T(DIGIT)+ ;
-CTE_INT_T : ('-')?DIGIT+ ;
+CTE_FLOAT_T : (DIGIT)+POINT_T(DIGIT)+ ;
+CTE_INT_T : DIGIT+ ;
 
 ID_T : LETTER(LETTER | '_' | DIGIT)* ;
 
