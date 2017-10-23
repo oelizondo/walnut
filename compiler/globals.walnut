@@ -1,0 +1,21 @@
+program hello;
+
+globals {
+  int wal;
+  float hello;
+  string goodbye;
+  int daniel = 10;
+  float oscar = 10.0;
+  boolean coque = false;
+}
+
+func hola (int uno, int dos) : string {
+  return "Hola";
+}
+
+func adios () {
+  "Adios";
+}
+
+run
+end

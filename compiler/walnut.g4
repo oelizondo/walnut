@@ -1,6 +1,18 @@
 grammar walnut;
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* START_T blocks* FINISH_T ;
+@header {
+import pprint
+from engine import Engine
+}
+
+@members {
+global program_engine
+global pp
+program_engine = Engine()
+pp = pprint.PrettyPrinter(indent=2)
+}
+
+program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* START_T blocks* FINISH_T {pp.pprint(program_engine.context.global_directory.globals)};
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -14,9 +26,9 @@ class_methods : METHODS_T LCB_T initializer method_declaration* RCB_T ;
 
 initializer : FUNC_T INIT_T LP_T parameters? RP_T LCB_T blocks* RCB_T ;
 
-method_declaration : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression)? RCB_T;
+method_declaration : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression END_OF_STM_T)? RCB_T;
 
-functions : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression END_OF_STM_T)? RCB_T ;
+functions : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression END_OF_STM_T)? RCB_T {program_engine.register_function($ID_T.text, $parameters.text, $var_type.text)};
 
 parameters : var_type ID_T COMMA_T parameters
              | var_type ID_T ;
@@ -45,7 +57,7 @@ term : factor (MULTI_T|DIVISION_T) term
 factor : power_of POW_T factor
          | power_of ;
 
-power_of : (MINUS_T|NOT_T)? (atomic|LP_T expression RP_T) ;
+power_of : NOT_T? (atomic|LP_T expression RP_T) ;
 
 atomic : (ID_T|constants|call_object_method|call_function|call_array) ;
 
@@ -56,21 +68,19 @@ relop_tokens : EQUAL_T
                | LESS_T
                | GREATER_T ;
 
-declaration_assignment : (declaration|assignments)+;
+declaration_assignment : ((declaration | assignments) END_OF_STM_T)+ ;
 
 declaration : (array_declaration | var_declaration ) ;
 
-var_declaration : var_type ID_T END_OF_STM_T ;
+array_declaration : var_type ID_T LB_T CTE_INT_T RB_T {program_engine.register_variable($var_type.text, $ID_T.text)};
 
-array_declaration : var_type ID_T LB_T CTE_INT_T RB_T END_OF_STM_T ;
+var_declaration : var_type ID_T {program_engine.register_variable($var_type.text, $ID_T.text)};
 
 assignments : (array_assignment | var_assignment) ;
 
-array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T assignment_body;
+array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
 
-var_assignment : (var_type)? ID_T assignment_body;
-
-assignment_body : ASSIGN_T expression END_OF_STM_T ;
+var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
 
 loops : WHILE_T LP_T expression RP_T LCB_T blocks* RCB_T ;
 
@@ -91,7 +101,8 @@ var_type : INT_T|STRING_T|FLOAT_T|BOOLEAN_T ;
 constants : CTE_FLOAT_T
             |CTE_INT_T
             |CTE_STRING_T
-            |CTE_BOOL_T ;
+            |TRUE_T
+            |FALSE_T ;
 
 
 /*
@@ -132,9 +143,8 @@ OR_OP_T : '||'|'or' ;
 WS : [ \t\r\n] -> skip ;
 
 CTE_STRING_T : '"'.*?'"' ;
-CTE_FLOAT_T : (DIGIT)+POINT_T(DIGIT)+ ;
-CTE_INT_T : DIGIT+ ;
-CTE_BOOL_T : TRUE_T|FALSE_T ;
+CTE_FLOAT_T : ('-')?(DIGIT)+POINT_T(DIGIT)+ ;
+CTE_INT_T : ('-')?DIGIT+ ;
 
 ID_T : LETTER(LETTER | '_' | DIGIT)* ;
 

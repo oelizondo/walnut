@@ -1,6 +1,10 @@
 # Generated from walnut.g4 by ANTLR 4.7
 from antlr4 import *
 
+import pprint
+from engine import Engine
+
+
 # This class defines a complete listener for a parse tree produced by walnutParser.
 class walnutListener(ParseTreeListener):
 
@@ -220,21 +224,21 @@ class walnutListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by walnutParser#var_declaration.
-    def enterVar_declaration(self, ctx):
-        pass
-
-    # Exit a parse tree produced by walnutParser#var_declaration.
-    def exitVar_declaration(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by walnutParser#array_declaration.
     def enterArray_declaration(self, ctx):
         pass
 
     # Exit a parse tree produced by walnutParser#array_declaration.
     def exitArray_declaration(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by walnutParser#var_declaration.
+    def enterVar_declaration(self, ctx):
+        pass
+
+    # Exit a parse tree produced by walnutParser#var_declaration.
+    def exitVar_declaration(self, ctx):
         pass
 
 
@@ -262,15 +266,6 @@ class walnutListener(ParseTreeListener):
 
     # Exit a parse tree produced by walnutParser#var_assignment.
     def exitVar_assignment(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by walnutParser#assignment_body.
-    def enterAssignment_body(self, ctx):
-        pass
-
-    # Exit a parse tree produced by walnutParser#assignment_body.
-    def exitAssignment_body(self, ctx):
         pass
 
 
