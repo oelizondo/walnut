@@ -3,11 +3,6 @@ from context import Context
 class Engine:
     def __init__(self):
         self.cuadrples = []
-        self.operatorStack = []
-        self.typeStack = []
-        self.IDStack = []
-        self.breakStack = []
-        self.gotoStack = []
         self.context = Context('GLOBAL')
         self.current_context = self.context
 
@@ -20,7 +15,6 @@ class Engine:
 
     def register_function(self, header, params=None, return_type=None):
         child_context = Context(header, self.context)
-        print(child_context.context)
         self.current_context = child_context
         self.context.function_directory.register(header, params, return_type, child_context)
 

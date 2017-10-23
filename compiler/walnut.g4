@@ -64,7 +64,7 @@ term : factor (MULTI_T|DIVISION_T) term
 factor : power_of POW_T factor
          | power_of ;
 
-power_of : (NOT_T | MINUS_T )? (atomic|LP_T expression RP_T) ;
+power_of : (NOT_T | MINUS_T )? (atomic {program_engine.operation.add_id($atom.text)}|LP_T expression RP_T) ;
 
 atomic : (ID_T|constants|call_object_method|call_function|call_array) ;
 
