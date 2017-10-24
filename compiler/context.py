@@ -1,5 +1,6 @@
 from function_directory import FunctionDirectory
 from global_directory import GlobalDirectory
+from operation import Operation
 
 class Context:
     def __init__(self, context, parent=None):

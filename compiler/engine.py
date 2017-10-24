@@ -2,13 +2,9 @@ from context import Context
 
 class Engine:
     def __init__(self):
-        self.cuadrples = []
+        self.cuadruples = []
         self.context = Context('GLOBAL')
         self.current_context = self.context
-
-    def generate_cuad(self):
-        cuad = Cuadruple(operation, left_side, right_side, result)
-        self.cuadruples.append(cuad)
 
     def register_variable(self, var_type, identifier, value=None):
         self.current_context.global_directory.register(var_type, identifier, value)
@@ -20,3 +16,6 @@ class Engine:
 
     def reset_context(self):
         self.current_context = self.context
+
+    def send_cuad(cuad):
+        self.cuadruples.append(cuad)

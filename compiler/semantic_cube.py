@@ -28,7 +28,8 @@
 class SemanticCube:
     def __init__(self):
         self.semantic_cube = {}
-
+        self.converter = {'int': 0 , 'float' : 1, 'boolean': 2, 'string':3, '==':10, '!': 11, 'not': 11, 'and':12, '&&':12, 'or':13, '||':13, '<=': 14}
+        self.converter.update({'>=': 15, '<': 16, '>':17, '/':18, '^':19, '*':20, '+':21, '-':22, '=':23, '!':24})
         for counter in range(0,4):
             # logic operations
             for i in range(10,18):

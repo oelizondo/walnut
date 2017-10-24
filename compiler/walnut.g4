@@ -3,12 +3,15 @@ grammar walnut;
 @header {
 import pprint
 from engine import Engine
+from operation import Operation
 }
 
 @members {
 global program_engine
 global pp
+global operation
 program_engine = Engine()
+operation = Operation(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
@@ -47,24 +50,25 @@ blocks : expression END_OF_STM_T
 
 write : PRINT_T LP_T expression RP_T END_OF_STM_T ;
 
-expression : conditional_expression ;
+expression : conditional_expression {print(operation.operator_stack)};
 
-conditional_expression : relational_expression (OR_OP_T | AND_OP_T) conditional_expression
+conditional_expression : relational_expression and_or_op {operation.operator_stack.append($and_or_op.text)} conditional_expression {operation.compare_op()}
                          | relational_expression ;
 
-relational_expression : math_expression relop_tokens relational_expression
+relational_expression : math_expression relop_tokens {operation.operator_stack.append($relop_tokens.text)} relational_expression
                         | math_expression ;
 
-math_expression : term (PLUS_T | MINUS_T) math_expression
+math_expression : term plus_minus_op {operation.operator_stack.append($plus_minus_op.text)} math_expression
                   | term;
 
-term : factor (MULTI_T|DIVISION_T) term
+term : factor mult_div_op {operation.operator_stack.append($mult_div_op.text)} term
        | factor;
 
-factor : power_of POW_T factor
+factor : power_of POW_T {operation.operator_stack.append($POW_T.text)} factor
          | power_of ;
 
-power_of : (NOT_T | MINUS_T )? (atomic {program_engine.operation.add_id($atom.text)}|LP_T expression RP_T) ;
+power_of : atomic {operation.add_identifier($atomic.text)}
+           | LP_T expression RP_T ;
 
 atomic : (ID_T|constants|call_object_method|call_function|call_array) ;
 
@@ -110,6 +114,9 @@ constants : CTE_FLOAT_T
             |CTE_STRING_T
             |TRUE_T
             |FALSE_T ;
+and_or_op: (OR_OP_T | AND_OP_T) ;
+mult_div_op : (MULTI_T|DIVISION_T) ;
+plus_minus_op : (PLUS_T | MINUS_T) ;
 
 
 /*
