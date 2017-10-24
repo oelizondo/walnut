@@ -15,7 +15,7 @@ operation = Operation(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* START_T blocks* FINISH_T {pp.pprint(program_engine.context.global_directory.globals)};
+program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* START_T blocks* FINISH_T;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -50,7 +50,7 @@ blocks : expression END_OF_STM_T
 
 write : PRINT_T LP_T expression RP_T END_OF_STM_T ;
 
-expression : conditional_expression {print(operation.operator_stack)};
+expression : conditional_expression ;
 
 conditional_expression : relational_expression and_or_op {operation.operator_stack.append($and_or_op.text)} conditional_expression {operation.compare_op()}
                          | relational_expression ;
@@ -67,10 +67,10 @@ term : factor mult_div_op {operation.operator_stack.append($mult_div_op.text)} t
 factor : power_of POW_T {operation.operator_stack.append($POW_T.text)} factor
          | power_of ;
 
-power_of : atomic {operation.add_identifier($atomic.text)}
+power_of : atomic
            | LP_T expression RP_T ;
 
-atomic : (ID_T|constants|call_object_method|call_function|call_array) ;
+atomic : (ID_T|constants|call_object_method|call_function|call_array) {operation.add_identifier($ID_T.text, $constants.text, $call_object_method.text, $call_function.text, $call_array.text)};
 
 relop_tokens : EQUAL_T
                | NOT_EQUAL_T
