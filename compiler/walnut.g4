@@ -15,7 +15,7 @@ operation = Operation(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* START_T blocks* FINISH_T;
+program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* START_T blocks* FINISH_T {program_engine.print_quads()};
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -50,25 +50,25 @@ blocks : expression END_OF_STM_T
 
 write : PRINT_T LP_T expression RP_T END_OF_STM_T ;
 
-expression : conditional_expression ;
+expression : conditional_expression;
 
-conditional_expression : relational_expression and_or_op {operation.operator_stack.append($and_or_op.text)} conditional_expression {operation.compare_op()}
-                         | relational_expression ;
+conditional_expression : relational_expression {operation.compare_op()} and_or_op  {operation.operator_stack.append($and_or_op.text)} conditional_expression
+                         | relational_expression {operation.compare_op()};
 
 relational_expression : math_expression relop_tokens {operation.operator_stack.append($relop_tokens.text)} relational_expression
                         | math_expression ;
 
-math_expression : term plus_minus_op {operation.operator_stack.append($plus_minus_op.text)} math_expression
-                  | term;
+math_expression : term {operation.add_substract_op()} plus_minus_op  {operation.operator_stack.append($plus_minus_op.text)} math_expression
+                  | term {operation.add_substract_op()};
 
-term : factor mult_div_op {operation.operator_stack.append($mult_div_op.text)} term
-       | factor;
+term : factor {operation.multiply_divide_op()} mult_div_op  {operation.operator_stack.append($mult_div_op.text)} term
+       | factor {operation.multiply_divide_op()} ;
 
-factor : power_of POW_T {operation.operator_stack.append($POW_T.text)} factor
-         | power_of ;
+factor : power_of {operation.power_of_op()} POW_T  {operation.operator_stack.append($POW_T.text)} factor
+         | power_of  {operation.power_of_op()} ;
 
 power_of : atomic
-           | LP_T expression RP_T ;
+           | LP_T {operation.operator_stack.append('(')}  expression  RP_T {operation.operator_stack.pop()} ;
 
 atomic : (ID_T|constants|call_object_method|call_function|call_array) {operation.add_identifier($ID_T.text, $constants.text, $call_object_method.text, $call_function.text, $call_array.text)};
 

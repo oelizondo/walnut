@@ -1,10 +1,9 @@
 from function_directory import FunctionDirectory
-from global_directory import GlobalDirectory
-from operation import Operation
+from variable_directory import VariableDirectory
 
 class Context:
     def __init__(self, context, parent=None):
         self.context = context
         self.parent = parent
         self.function_directory = FunctionDirectory(context)
-        self.global_directory = GlobalDirectory()
+        self.variable_directory = VariableDirectory()

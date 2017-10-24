@@ -4,4 +4,5 @@ compiler/walnutLexer.tokens
 compiler/walnutListener.py
 compiler/walnutParser.py
 compiler/*.pyc
-compiler/calnut.tokens
+compiler/walnut.tokens
+compiler/*.owalnut
