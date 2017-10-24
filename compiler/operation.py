@@ -114,13 +114,14 @@ class Operation:
             res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
             if res_type != None:
                 temporal_id = "temp" + str(self.counter)
-                self.generate_cuad(op, left_side, right_side, Variable(temporal_id, None, res_type))
+                self.generate_cuad(op, left_side, right_side, temporal_id)
                 self.program_engine.register_variable(res_type, temporal_id, None)
                 # if op == 20:
                 #     res = left_side * right_side
                 # else:
                 #     res = left_side / right_side
                 self.counter += 1
+                self.type_stack.append(self.semantic_cube.inverter[res_type])
                 self.identifier_stack.append(temporal_id)
                 # self.generate_cuad(op, left_side, right_side, res)
             else:
@@ -140,13 +141,14 @@ class Operation:
             res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
             if res_type != None:
                 temporal_id = "temp" + str(self.counter)
-                self.generate_cuad(op, left_side, right_side, Variable(temporal_id, None, res_type))
+                self.generate_cuad(op, left_side, right_side, temporal_id)
                 self.program_engine.register_variable(res_type, temporal_id, None)
                 # if op == 21:
                 #     res = left_side + right_side
                 # else:
                 #     res = left_side - right_side
                 self.counter += 1
+                self.type_stack.append(self.semantic_cube.inverter[res_type])
                 self.identifier_stack.append(temporal_id)
                 # self.generate_cuad(op, left_side, right_side, res)
             else:
