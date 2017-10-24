@@ -17,5 +17,9 @@ class Engine:
     def reset_context(self):
         self.current_context = self.context
 
-    def send_cuad(cuad):
+    def send_cuad(self,cuad):
         self.cuadruples.append(cuad)
+        
+    def print_quad(self):
+        for i in self.cuadruples:
+            print(i.operation, i.left_side, i.right_side, i.result)
