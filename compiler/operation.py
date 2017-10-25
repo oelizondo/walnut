@@ -77,6 +77,9 @@ class Operation:
         elif is_float(constant):
             self.type_stack.append('float')
             self.identifier_stack.append(float(constant))
+        elif constant == 'true' or constant == 'false':
+            self.type_stack.append('boolean')
+            self.identifier_stack.append(constant)
         else:
             print("Type Error")
             sys.exit()
@@ -84,7 +87,8 @@ class Operation:
     def compare_op(self):
         if len(self.operator_stack) == 0:
             return
-        if self.operator_stack[len(self.operator_stack) - 1] == '&&' or self.operator_stack[len(self.operator_stack) - 1] == '||':
+        op = self.operator_stack[len(self.operator_stack) - 1]
+        if op == '&&' or op == '||' or op == 'and' or op == 'or':
             op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
             type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
@@ -106,13 +110,14 @@ class Operation:
                 print("something")
 
     def is_relational_op(self, op):
-        return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '=='
+        return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '==' or op == 'is'
 
     def compare_relational_op(self):
         if len(self.operator_stack) == 0:
             return
-        op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
+        op = self.operator_stack[len(self.operator_stack) - 1]
         if self.is_relational_op(op):
+            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
             type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             right_side = extract_value(self.identifier_stack.pop())
@@ -130,7 +135,8 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("something")
+                print("Type Error")
+                sys.exit()
 
     def multiply_divide_op(self):
         if len(self.operator_stack) == 0:
@@ -208,3 +214,24 @@ class Operation:
             else:
                 print("Type Error")
                 sys.exit()
+
+    def assign_operation(self, identifier):
+        if identifier != None:
+            starting_context = self.program_engine.current_context
+            var = None
+            while var == None and starting_context != None:
+                var = starting_context.variable_directory.variables.get(identifier, None)
+                starting_context = starting_context.parent
+
+            if starting_context == None and var == None:
+                print("Variable " + identifier + " doesn't exist")
+                sys.exit()
+            else:
+                to_assign_value = self.identifier_stack[len(self.identifier_stack) - 1]
+                to_assign_type = self.type_stack[len(self.type_stack) - 1]
+                if var['type'] == to_assign_type:
+                    var['value'] = to_assign_value
+                    self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['name'])
+                else:
+                    print("Type Error")
+                    sys.exit()

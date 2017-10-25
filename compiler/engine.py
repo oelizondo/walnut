@@ -5,6 +5,7 @@ class Engine:
         self.cuadruples = []
         self.context = Context('GLOBAL')
         self.current_context = self.context
+        self.jump_stack = []
 
     def register_variable(self, var_type, identifier, value=None):
         self.current_context.variable_directory.register(var_type, identifier, value)
@@ -21,5 +22,7 @@ class Engine:
         self.cuadruples.append(cuad)
 
     def print_quads(self):
+        count = 0
         for cuad in self.cuadruples:
-            print(cuad.operation, cuad.left_side, cuad.right_side, cuad.result)
+            print(count, cuad.operation, cuad.left_side, cuad.right_side, cuad.result)
+            count += 1

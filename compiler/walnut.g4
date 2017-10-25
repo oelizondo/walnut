@@ -4,14 +4,17 @@ grammar walnut;
 import pprint
 from engine import Engine
 from operation import Operation
+from jump_engine import JumpEngine
 }
 
 @members {
 global program_engine
 global pp
 global operation
+global jump_eng
 program_engine = Engine()
 operation = Operation(program_engine)
+jump_eng = JumpEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
@@ -91,13 +94,15 @@ assignments : (array_assignment | var_assignment) ;
 
 array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
 
-var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
+var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)};
 
 loops : WHILE_T LP_T expression RP_T LCB_T blocks* RCB_T ;
 
-conditional : IF_T if_elsif_body (ELSEIF_T if_elsif_body)* ELSE_T LCB_T blocks* RCB_T ;
+conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T {jump_eng.fill_gotof()} LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
 
-if_elsif_body : LP_T expression RP_T LCB_T blocks* RCB_T ;
+if_body: LP_T expression RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
+
+else_if_body: LP_T expression RP_T {jump_eng.register_elseif()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
 
 object_declaration : ID_T ID_T ASSIGN_T ID_T POINT_T NEW_T LP_T arguments? RP_T END_OF_STM_T;
 

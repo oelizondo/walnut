@@ -1,12 +1,17 @@
 program test;
 
-globals {
-  int a = 20;
-  float z = 10.4;
-}
-
 run
   boolean a = true;
   boolean b = false;
-  a < b;
+  if (a == b) {
+    int v = 10;
+    int z = 12 * 32;
+  } elseif (b != a) {
+    float a = 20.0;
+    int j = 500;
+  } elseif (10 < 14) {
+    int t = 1000000;
+  } else {
+    int p = 500;
+  }
 end
