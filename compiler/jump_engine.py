@@ -29,9 +29,12 @@ class JumpEngine:
 
     def fill_gotof(self):
         cuads = self.program_engine.cuadruples
-        last_cuad = cuads[len(cuads) - 1]
         gotof = self.program_engine.jump_stack.pop()
-        last_cuad.result = gotof
+        while_cuad = cuads[gotof]
+        while_cuad.result = len(cuads) + 1;
+        while_start = self.program_engine.jump_stack.pop()
+        cuad = Cuadruple('GOTO', None, None, while_start)
+        self.program_engine.send_cuad(cuad)
 
     def fill_gotos(self):
         cuads = self.program_engine.cuadruples
@@ -39,3 +42,7 @@ class JumpEngine:
             goto = self.goto_stack.pop()
             cuad = cuads[goto]
             cuad.result = len(cuads)
+    def insert_jump(self):
+        cuads = self.program_engine.cuadruples
+        jump = len(cuads)
+        self.program_engine.jump_stack.append(jump)

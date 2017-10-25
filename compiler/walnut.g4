@@ -96,7 +96,7 @@ array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T ASSIGN_T expression {pro
 
 var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)};
 
-loops : WHILE_T LP_T expression RP_T LCB_T blocks* RCB_T ;
+loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {jump_eng.register_conditional()} RP_T LCB_T blocks* {jump_eng.fill_gotof()}RCB_T ;
 
 conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T  LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
 
