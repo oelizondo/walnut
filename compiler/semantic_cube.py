@@ -59,7 +59,7 @@ class SemanticCube:
         return sem
 
     def generate_operator_converter(self):
-        return {'int':0,'float':1,'boolean':2,'string':3,'==':10,'!': 11,'not': 11,'and':12,'&&':12,'or':13,'||':13,'<=': 14,'>=': 15,'<': 16,'>':17,'/':18,'^':19,'*':20,'+':21,'-':22,'=':23,'!':24}
+        return {'int':0,'float':1,'boolean':2,'string':3,'==':10, 'is': 10, '!=': 11,'not': 11,'and':12,'&&':12,'or':13,'||':13,'<=': 14,'>=': 15,'<': 16,'>':17,'/':19,'^':19,'*':20,'+':21,'-':22,'=':23,'!':24}
 
     def generate_invert_converter(self):
         return {v: k for k, v in self.converter.iteritems()}

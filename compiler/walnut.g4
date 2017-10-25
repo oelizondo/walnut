@@ -98,7 +98,7 @@ var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_v
 
 loops : WHILE_T LP_T expression RP_T LCB_T blocks* RCB_T ;
 
-conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T {jump_eng.fill_gotof()} LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
+conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T  LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
 
 if_body: LP_T expression RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
 

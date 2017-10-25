@@ -11,23 +11,19 @@ class JumpEngine:
         cuad = Cuadruple('GOTOF', last_cuad.result, None, None)
         self.program_engine.send_cuad(cuad)
         self.program_engine.jump_stack.append(len(cuads) - 1)
-        print(self.program_engine.jump_stack)
-
-
 
     def register_goto(self):
         cuads = self.program_engine.cuadruples
         cuad = Cuadruple('GOTO', None, None, None)
+        last_gotof = self.program_engine.jump_stack.pop()
+        self.program_engine.cuadruples[last_gotof].result = len(cuads) + 1
         self.program_engine.send_cuad(cuad)
         self.goto_stack.append(len(cuads) - 1)
 
     def register_elseif(self):
-        print(self.program_engine.jump_stack)
         cuads = self.program_engine.cuadruples
         last_cuad = cuads[len(cuads) - 1]
         cuad = Cuadruple('GOTOF', last_cuad.result, None, None)
-        last_gotof = self.program_engine.jump_stack.pop()
-        self.program_engine.cuadruples[last_gotof].result = len(cuads)
         self.program_engine.send_cuad(cuad)
         self.program_engine.jump_stack.append(len(cuads) - 1)
 

@@ -9,9 +9,10 @@ run
   } elseif (b != a) {
     float a = 20.0;
     int j = 500;
-  } elseif (10 < 14) {
+  } elseif (10 - 15 * 12 < 14 + 14 * 45 ^ 34) {
     int t = 1000000;
   } else {
     int p = 500;
   }
+  int finished = 0;
 end

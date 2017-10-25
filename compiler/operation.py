@@ -110,7 +110,7 @@ class Operation:
                 print("something")
 
     def is_relational_op(self, op):
-        return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '==' or op == 'is'
+        return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '==' or op == 'is' or op == '!=' or op == 'not'
 
     def compare_relational_op(self):
         if len(self.operator_stack) == 0:
