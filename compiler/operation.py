@@ -1,6 +1,5 @@
 from semantic_cube import SemanticCube
 from cuadruple import Cuadruple
-from variable import Variable
 import sys
 
 def is_int(num):
@@ -86,21 +85,52 @@ class Operation:
         if len(self.operator_stack) == 0:
             return
         if self.operator_stack[len(self.operator_stack) - 1] == '&&' or self.operator_stack[len(self.operator_stack) - 1] == '||':
-            op = self.operator_stack.pop()
-            # type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            # type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            right_side = self.identifier_stack.pop()
-            left_side = self.identifier_stack.pop()
-            # res_type = self.semantic_cube.get((type_right_side, type_left_side, op), None)
-            # if res_type != None:
-            #     if op == '&&':
-            #         res = left_side & right_side
-            #     else:
-            #         res = left_side | right_side
-            #     self.identifier_stack.append(res)
-            self.generate_cuad(op, left_side, right_side, 0)
-            # else:
-            #     print("something")
+            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
+            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+            right_side = extract_value(self.identifier_stack.pop())
+            left_side = extract_value(self.identifier_stack.pop())
+            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            if res_type != None:
+                temporal_id = "temp" + str(self.counter)
+                self.generate_cuad(op, left_side, right_side, temporal_id)
+                self.program_engine.register_variable(res_type, temporal_id, None)
+                self.counter += 1
+                self.type_stack.append(self.semantic_cube.inverter[res_type])
+                self.identifier_stack.append(temporal_id)
+                # if op == 20:
+                #     res = left_side * right_side
+                # else:
+                #     res = left_side / right_side
+            else:
+                print("something")
+
+    def is_relational_op(self, op):
+        return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '=='
+
+    def compare_relational_op(self):
+        if len(self.operator_stack) == 0:
+            return
+        op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
+        if self.is_relational_op(op):
+            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+            right_side = extract_value(self.identifier_stack.pop())
+            left_side = extract_value(self.identifier_stack.pop())
+            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            if res_type != None:
+                temporal_id = "temp" + str(self.counter)
+                self.generate_cuad(op, left_side, right_side, temporal_id)
+                self.program_engine.register_variable(res_type, temporal_id, None)
+                self.counter += 1
+                self.type_stack.append(self.semantic_cube.inverter[res_type])
+                self.identifier_stack.append(temporal_id)
+                # if op == 20:
+                #     res = left_side * right_side
+                # else:
+                #     res = left_side / right_side
+            else:
+                print("something")
 
     def multiply_divide_op(self):
         if len(self.operator_stack) == 0:
@@ -116,14 +146,14 @@ class Operation:
                 temporal_id = "temp" + str(self.counter)
                 self.generate_cuad(op, left_side, right_side, temporal_id)
                 self.program_engine.register_variable(res_type, temporal_id, None)
+                self.counter += 1
+                self.type_stack.append(self.semantic_cube.inverter[res_type])
+                self.identifier_stack.append(temporal_id)
                 # if op == 20:
                 #     res = left_side * right_side
                 # else:
                 #     res = left_side / right_side
-                self.counter += 1
-                self.type_stack.append(self.semantic_cube.inverter[res_type])
-                self.identifier_stack.append(temporal_id)
-                # self.generate_cuad(op, left_side, right_side, res)
+
             else:
                 print("Type Error")
                 sys.exit()
@@ -143,14 +173,13 @@ class Operation:
                 temporal_id = "temp" + str(self.counter)
                 self.generate_cuad(op, left_side, right_side, temporal_id)
                 self.program_engine.register_variable(res_type, temporal_id, None)
+                self.counter += 1
+                self.type_stack.append(self.semantic_cube.inverter[res_type])
+                self.identifier_stack.append(temporal_id)
                 # if op == 21:
                 #     res = left_side + right_side
                 # else:
                 #     res = left_side - right_side
-                self.counter += 1
-                self.type_stack.append(self.semantic_cube.inverter[res_type])
-                self.identifier_stack.append(temporal_id)
-                # self.generate_cuad(op, left_side, right_side, res)
             else:
                 print("Type Error")
                 sys.exit()
@@ -159,18 +188,23 @@ class Operation:
         if len(self.operator_stack) == 0:
             return
         if self.operator_stack[len(self.operator_stack) - 1] == '^':
-            print(1)
-            # type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            # type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            # right_side = self.identifier_stack.pop()
-            # left_side = self.identifier_stack.pop()
-            # res_type = self.semantic_cube.get((type_right_side, type_left_side, op), None)
-            # if res_type != None:
-            #     if op == '*':
-            #         res = left_side * right_side
-            #     else:
-            #         res = left_side / right_side
-            #     self.identifier_stack.append(res)
-        # program_engine.generate_cuad(op, left_side, right_side, 0)
-            # else:
-            #     print("something")
+            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
+            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+            right_side = extract_value(self.identifier_stack.pop())
+            left_side = extract_value(self.identifier_stack.pop())
+            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            if res_type != None:
+                temporal_id = "temp" + str(self.counter)
+                self.generate_cuad(op, left_side, right_side, temporal_id)
+                self.program_engine.register_variable(res_type, temporal_id, None)
+                self.counter += 1
+                self.type_stack.append(self.semantic_cube.inverter[res_type])
+                self.identifier_stack.append(temporal_id)
+                # if op == '*':
+                #     res = left_side * right_side
+                # else:
+                #     res = left_side / right_side
+            else:
+                print("Type Error")
+                sys.exit()

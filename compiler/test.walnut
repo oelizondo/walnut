@@ -6,8 +6,7 @@ globals {
 }
 
 run
-  int b = 10;
-  int c = 10;
-  float d = 0.5;
-  z * (a + b + c * d);
+  boolean a = true;
+  boolean b = false;
+  a < b;
 end

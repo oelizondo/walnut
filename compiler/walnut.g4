@@ -55,8 +55,8 @@ expression : conditional_expression;
 conditional_expression : relational_expression {operation.compare_op()} and_or_op  {operation.operator_stack.append($and_or_op.text)} conditional_expression
                          | relational_expression {operation.compare_op()};
 
-relational_expression : math_expression relop_tokens {operation.operator_stack.append($relop_tokens.text)} relational_expression
-                        | math_expression ;
+relational_expression : math_expression {operation.compare_relational_op()} relop_tokens {operation.operator_stack.append($relop_tokens.text)} relational_expression
+                        | math_expression {operation.compare_relational_op()};
 
 math_expression : term {operation.add_substract_op()} plus_minus_op  {operation.operator_stack.append($plus_minus_op.text)} math_expression
                   | term {operation.add_substract_op()};
