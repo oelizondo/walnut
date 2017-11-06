@@ -1,5 +1,36 @@
 program test;
 
+class ClassTest {
+  attributes {
+    int a = 0;
+  }
+
+  methods {
+    func initializer() {
+      int a = 1;
+    }
+    func doSomething() {
+      int cosa = 12434;
+    }
+  }
+}
+
+class Test2 extends ClassTest {
+  attributes {
+    int a = 0;
+    float b = 1.0;
+  }
+
+  methods {
+    func initializer() {
+
+    }
+    func doSomething() {
+
+    }
+  }
+}
+
 run
   boolean a = true;
   boolean b = false;
@@ -26,6 +57,12 @@ run
 
   while(5 * 7 ^ 6 + 5){
     middle + 1;
+    if(middle < p) {
+      middle + 2;
+    }
+    else{
+      middle + 1;
+    }
   }
 
   int finished = 0;

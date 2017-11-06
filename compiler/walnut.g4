@@ -18,11 +18,14 @@ jump_eng = JumpEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* functions* START_T blocks* FINISH_T {program_engine.print_quads()};
+program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.print_classes()} functions* START_T blocks* FINISH_T {program_engine.print_quads()};
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
-classes : (CLASS_T ID_T (EXTENDS_T ID_T)?  LCB_T class_body RCB_T) ;
+classes : CLASS_T ID_T {program_engine.register_class($ID_T.text)} extends {program_engine.reset_context()}
+         | CLASS_T ID_T LCB_T class_body RCB_T {program_engine.register_class($ID_T.text)} {program_engine.reset_context()};
+
+extends : EXTENDS_T ID_T LCB_T class_body RCB_T {program_engine.context.class_directory.classes[program_engine.context.class_directory.current_class.name].register_parent_class($ID_T.text)} ;
 
 class_body : class_attributes class_methods ;
 
