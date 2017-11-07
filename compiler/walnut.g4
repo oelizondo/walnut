@@ -18,7 +18,7 @@ jump_eng = JumpEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.print_classes()} functions* START_T blocks* FINISH_T {program_engine.print_quads()};
+program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.reset_to_global()} functions* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {program_engine.print_classes()} {program_engine.print_main()} ;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -29,17 +29,20 @@ extends : EXTENDS_T ID_T {program_engine.context.class_directory.classes[program
 
 class_body : class_attributes class_methods ;
 
-class_attributes : ATTRS_T LCB_T declaration_assignment RCB_T ;
+class_attributes : ATTRS_T LCB_T (declaration END_OF_STM_T)* RCB_T ;
 
-class_methods : METHODS_T LCB_T initializer method_declaration* RCB_T ;
+class_methods : METHODS_T LCB_T initializer {program_engine.register_end_proc()} (method_declaration {program_engine.register_end_proc()})* RCB_T ;
 
 initializer : FUNC_T INIT_T {program_engine.register_function($INIT_T.text)} LP_T parameters? RP_T LCB_T blocks* RCB_T {program_engine.reset_context()} ;
 
-method_declaration : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T (RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)})? method_body {program_engine.reset_context()};
+method_declaration : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.reset_context()}
+                    | FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T function_body_no_return {program_engine.reset_context()};
 
-method_body : LCB_T (blocks)* (RETURN_T expression END_OF_STM_T)? RCB_T;
+functions : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.reset_context()}
+            | FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T function_body_no_return {program_engine.reset_context()};
 
-functions : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression END_OF_STM_T)? RCB_T {program_engine.register_function($ID_T.text, $var_type.text)} {program_engine.reset_context()};
+function_body : LCB_T (blocks)* RETURN_T expression END_OF_STM_T RCB_T;
+function_body_no_return : LCB_T (blocks)* RCB_T;
 
 parameters : var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
              | var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};

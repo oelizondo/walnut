@@ -6,7 +6,7 @@ globals {
 
 class ClassTest {
   attributes {
-    int parent = 0;
+    int parent;
   }
 
   methods {
@@ -21,8 +21,8 @@ class ClassTest {
 
 class Test2 extends ClassTest {
   attributes {
-    int a = 0;
-    float b = 1.0;
+    int a;
+    float b;
   }
 
   methods {
@@ -33,6 +33,60 @@ class Test2 extends ClassTest {
       return 5;
     }
   }
+}
+
+class Test3 extends Test2 {
+  attributes {
+    int a;
+    float b;
+  }
+
+  methods {
+    func initializer(int a, float b) {
+      boolean x = 10 - 15 * 12 < 14 + 14 * 45 ^ 34;
+    }
+    func doSomething(int a, float b) : string {
+      int a = 5 + 5;
+      return 5;
+    }
+    func somethingElse(int this, int that) : int {
+      int b = 5 + 10;
+      return 5;
+    }
+
+  }
+}
+
+class Test4 extends Test3 {
+  attributes {
+    int a;
+    float b;
+  }
+
+  methods {
+    func initializer(int a, float b) {
+      boolean x = 10 - 15 * 12 < 14 + 14 * 45 ^ 34;
+    }
+    func doSomething(int a, float b) : string {
+      int a = 5 + 5;
+      return 5;
+    }
+    func somethingElse(int this, int that) : int {
+      int b = 5 + 10;
+      return 5;
+    }
+
+  }
+}
+
+func function1(int param1, string param2) : string {
+  if(5 < 7) {
+    5;
+  }
+  else {
+    0;
+  }
+  return 5;
 }
 
 run
