@@ -30,44 +30,10 @@ class Test2 extends ClassTest {
       boolean x = 10 - 15 * 12 < 14 + 14 * 45 ^ 34;
     }
     func doSomething(int a, float b) : string {
-      return 5;
+      a = parent + as;
     }
   }
 }
 
 run
-  boolean a = true;
-  boolean b = false;
-  if (a == b) {
-    int v = 10;
-    int z = 12 * 32;
-  } elseif (b != a) {
-    float a = 20.0;
-    int j = 500;
-  } elseif (10 - 15 * 12 < 14 + 14 * 45 ^ 34) {
-    int t = 1000000;
-  } else {
-    int p = 500;
-  }
-
-  int middle = 6;
-
-  if(5 < 6) {
-    5 * 5;
-  }
-  else {
-    6*5;
-  }
-
-  while(5 * 7 ^ 6 + 5){
-    middle + 1;
-    if(middle < p) {
-      middle + 2;
-    }
-    else{
-      middle + 1;
-    }
-  }
-
-  int finished = 0;
 end

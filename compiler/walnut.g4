@@ -23,9 +23,9 @@ program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
 classes : CLASS_T ID_T {program_engine.register_class($ID_T.text)} extends {program_engine.reset_context()}
-         | CLASS_T ID_T LCB_T class_body RCB_T {program_engine.register_class($ID_T.text)} {program_engine.reset_context()};
+         | CLASS_T ID_T {program_engine.register_class($ID_T.text)} LCB_T class_body RCB_T  {program_engine.reset_context()};
 
-extends : EXTENDS_T ID_T LCB_T class_body RCB_T {program_engine.context.class_directory.classes[program_engine.context.class_directory.current_class.name].register_parent_class($ID_T.text)} ;
+extends : EXTENDS_T ID_T {program_engine.context.class_directory.classes[program_engine.context.class_directory.current_class.name].register_parent_class($ID_T.text)} LCB_T class_body RCB_T;
 
 class_body : class_attributes class_methods ;
 
@@ -33,14 +33,16 @@ class_attributes : ATTRS_T LCB_T declaration_assignment RCB_T ;
 
 class_methods : METHODS_T LCB_T initializer method_declaration* RCB_T ;
 
-initializer : FUNC_T INIT_T LP_T parameters? RP_T LCB_T blocks* RCB_T ;
+initializer : FUNC_T INIT_T {program_engine.register_function($INIT_T.text)} LP_T parameters? RP_T LCB_T blocks* RCB_T {program_engine.reset_context()} ;
 
-method_declaration : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression END_OF_STM_T)? RCB_T;
+method_declaration : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T (RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)})? method_body {program_engine.reset_context()};
 
-functions : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression END_OF_STM_T)? RCB_T {program_engine.register_function($ID_T.text, $parameters.text, $var_type.text)};
+method_body : LCB_T (blocks)* (RETURN_T expression END_OF_STM_T)? RCB_T;
 
-parameters : var_type ID_T COMMA_T parameters
-             | var_type ID_T ;
+functions : FUNC_T ID_T LP_T parameters? RP_T (RETURN_TYPE_T var_type)? LCB_T blocks* (RETURN_T expression END_OF_STM_T)? RCB_T {program_engine.register_function($ID_T.text, $var_type.text)} {program_engine.reset_context()};
+
+parameters : var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
+             | var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};
 
 arguments : argument COMMA_T arguments
             | argument ;

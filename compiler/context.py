@@ -6,6 +6,6 @@ class Context:
     def __init__(self, context, parent=None):
         self.context = context
         self.parent = parent
-        self.function_directory = FunctionDirectory(context)
+        self.function_directory = FunctionDirectory(self)
         self.variable_directory = VariableDirectory()
         self.class_directory = ClassDirectory()

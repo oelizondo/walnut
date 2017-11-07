@@ -10,9 +10,9 @@ class Engine:
     def register_variable(self, var_type, identifier, value=None):
         self.current_context.variable_directory.register(var_type, identifier, value)
 
-    def register_function(self, header, params=None, return_type=None):
+    def register_function(self, header):
         child_context = Context(header, self.current_context)
-        self.current_context.function_directory.register(header, params, return_type, child_context)
+        self.current_context.function_directory.register(header, child_context, len(self.cuadruples))
         self.current_context = child_context
 
     def register_class(self, header, extend=None):
@@ -21,7 +21,7 @@ class Engine:
         self.current_context = child_context
 
     def reset_context(self):
-        self.current_context = self.context
+        self.current_context = self.current_context.parent
 
     def send_cuad(self, cuad):
         self.cuadruples.append(cuad)
@@ -36,3 +36,8 @@ class Engine:
             print("class : " + str(key) + " parent_class " +  str(value.extend))
             for attributes, types in value.context.variable_directory.variables.iteritems():
                 print("attribute : " + str(attributes))
+            for function, methods in value.context.function_directory.functions.iteritems():
+                print("function : " + str(function))
+                print(str(value.context.function_directory.functions[function]))
+            for attributes, types in value.context.parent.variable_directory.variables.iteritems():
+                print("parent attribute: " + str(attributes))

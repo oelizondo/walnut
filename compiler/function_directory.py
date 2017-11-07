@@ -3,28 +3,14 @@ class FunctionDirectory:
         self.context = context
         self.functions = {}
 
-    def register(self, header, arguments, return_type, context):
+    def register(self, header, context, starting_point):
         self.functions[header] = {
             'name': header,
-            'args': arguments,
-            'return_type': return_type,
-            'context': context
+            'context': context,
+            'starting_point': starting_point
         }
-    # def clean_arguments(self, arguments):
-    #     args = arguments.split(',')
-    #     types = []
-    #     for arg in args:
-    #         print(arg)
-    #
-    #         # if arg.startwith('int'):
-    #         #     types.append('int')
-    #         # elif arg.startwith('float'):
-    #         #     types.append('float')
-    #         # elif arg.startwith('boolean'):
-    #         #     types.append('boolean')
-    #         # elif types.append('string'):
-    #         #     types.append('string')
-    #         # else:
-    #         #     print("Not a valid type")
-    #
-    #     return types
+    def register_return_type(self, header, return_type):
+         self.context.parent.function_directory.functions[header].update({'return_type' : return_type})
+
+    def register_parameter(self, param_type, name):
+        self.context.variable_directory.register(param_type,name,None)
