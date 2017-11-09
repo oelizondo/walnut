@@ -41,6 +41,14 @@ class Test2 extends ClassTest {
   }
 }
 
+func function1(int param1, string param2) : string {
+  return 5;
+}
+
+func func2(int param1) : int {
+  return 5;
+}
 run
   int this = 5;
+  function1();
 end

@@ -37,9 +37,16 @@ class Engine:
         cuad = Cuadruple('endprogram', None, None, None)
         self.cuadruples.append(cuad)
 
+    def function_call(self, header):
+        function_recieved = self.context.function_directory.functions.get(header,None)
+        if function_recieved != None:
+            print(function_recieved)
+            print(self.context.variable_directory.variables)
+        else:
+            print("function" + str(header) + "does not exist")
 
     def reset_context(self):
-        print(str(self.current_context.context) + " -> father -> " + str(self.current_context.parent.context))
+        # print(str(self.current_context.context) + " -> father -> " + str(self.current_context.parent.context))
         self.current_context = self.current_context.parent
 
     def reset_to_global(self):
@@ -54,8 +61,8 @@ class Engine:
             print(count, cuad.operation, cuad.left_side, cuad.right_side, cuad.result)
             count += 1
 
-    def print_main(self):
-        print(self.context.function_directory.functions)
+    # def print_main(self):
+    #     print("-")
 
     def print_classes(self):
         for key, value in self.context.class_directory.classes.iteritems():

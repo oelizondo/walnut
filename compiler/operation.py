@@ -59,7 +59,6 @@ class Operation:
             starting_context = self.program_engine.current_context
             var = None
             while var == None and starting_context != None:
-                print(starting_context.context)
                 var = starting_context.variable_directory.variables.get(variable, None)
                 starting_context = starting_context.parent
 
@@ -70,7 +69,6 @@ class Operation:
             if variable != None:
                 self.type_stack.append(str(var['type']))
                 self.identifier_stack.append(var['value'])
-        print('')
     def add_constant(self, constant):
         if is_int(constant):
             self.type_stack.append('int')
