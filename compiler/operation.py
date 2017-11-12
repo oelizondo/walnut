@@ -81,6 +81,9 @@ class Operation:
         elif constant == 'true' or constant == 'false':
             self.type_stack.append('boolean')
             self.identifier_stack.append("%" + str(constant))
+        elif str(constant)[0] == "\"":
+            self.type_stack.append('string')
+            self.identifier_stack.append("%" + str(constant))
         else:
             print("Type Error could not add constant " + constant)
             sys.exit()

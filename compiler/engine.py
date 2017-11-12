@@ -1,5 +1,6 @@
 from context import Context
 from cuadruple import Cuadruple
+import sys
 
 class Engine:
     def __init__(self):
@@ -32,6 +33,17 @@ class Engine:
     def register_end_proc(self):
         cuad = Cuadruple('endproc', None, None, None)
         self.cuadruples.append(cuad)
+
+    def register_return(self, function_name, return_variable, return_type):
+        function = self.context.function_directory.functions.get(function_name)
+        function_return_type = function.get("return_type")
+        if function_return_type == return_type:
+            cuad = Cuadruple('return', None, None, return_variable)
+            self.cuadruples.append(cuad)
+
+        else:
+            print("Return value type in " + function_name + " does not match, recieved " + return_type + " expected: " + function_return_type)
+            sys.exit()
 
     def register_program_end(self):
         cuad = Cuadruple('endprogram', None, None, None)

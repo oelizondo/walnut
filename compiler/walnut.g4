@@ -38,7 +38,7 @@ initializer : FUNC_T INIT_T {program_engine.register_function($INIT_T.text)} LP_
 method_declaration : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.reset_context()}
                     | FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T function_body_no_return {program_engine.reset_context()};
 
-functions : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.reset_context()}
+functions : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.register_return($ID_T.text,operation.identifier_stack[-1],operation.type_stack[-1])} {program_engine.reset_context()}
             | FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T function_body_no_return {program_engine.reset_context()};
 
 function_body : LCB_T (blocks)* RETURN_T expression END_OF_STM_T RCB_T;
@@ -122,11 +122,11 @@ factor : power_of {operation.power_of_op()} POW_T  {operation.operator_stack.app
 power_of : atomic
            | LP_T {operation.operator_stack.append('(')}  expression  RP_T {operation.operator_stack.pop()} ;
 
-atomic : ID_T {operation.add_identifier($ID_T.text, None)};
-        |constants {operation.add_identifier(None, $constants.text)};
+atomic : ID_T {operation.add_identifier($ID_T.text, None)}
+        |constants {operation.add_identifier(None, $constants.text)}
         |call_object_method
         |call_function
-        |call_array
+        |call_array;
 
 relop_tokens : EQUAL_T
                | NOT_EQUAL_T

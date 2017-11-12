@@ -48,7 +48,7 @@ class Test2 extends ClassTest {
 }
 
 func function1(int param1, string param2) : string {
-  return 5;
+  return 5.5;
 }
 
 func func2(int param1) : int {
