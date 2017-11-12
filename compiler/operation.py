@@ -42,17 +42,17 @@ class Operation:
         cuad = Cuadruple(operation, left_side, right_side, result)
         self.program_engine.send_cuad(cuad)
 
-    def add_identifier(self, identifier, constant, obj, function, array):
+    def add_identifier(self, identifier, constant):
         if identifier != None:
             self.add(identifier)
         elif constant != None:
             self.add_constant(constant)
-        elif obj != None:
-            self.add_constant(obj)
-        elif function != None:
-            self.add_constant(function)
-        else:
-            self.add_constant(array)
+        # elif obj != None:
+        #     self.add_constant(obj)
+        # elif function != None:
+        #     self.add_constant(function)
+        #  else:
+        #     self.add_constant(array)
 
     def add(self, variable):
         if variable != None:
@@ -72,15 +72,17 @@ class Operation:
     def add_constant(self, constant):
         if is_int(constant):
             self.type_stack.append('int')
-            self.identifier_stack.append(int(constant))
+            # self.identifier_stack.append(int(constant))
+            self.identifier_stack.append("%" + str(constant))
         elif is_float(constant):
             self.type_stack.append('float')
-            self.identifier_stack.append(float(constant))
+            # self.identifier_stack.append(float(constant))
+            self.identifier_stack.append("%" + str(constant))
         elif constant == 'true' or constant == 'false':
             self.type_stack.append('boolean')
-            self.identifier_stack.append(constant)
+            self.identifier_stack.append("%" + str(constant))
         else:
-            print("Type Error")
+            print("Type Error could not add constant " + constant)
             sys.exit()
 
     def compare_op(self):
@@ -106,7 +108,7 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("something")
+                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
 
     def is_relational_op(self, op):
         return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '==' or op == 'is' or op == '!=' or op == 'not'
@@ -134,7 +136,7 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error")
+                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
                 sys.exit()
 
     def multiply_divide_op(self):
@@ -160,8 +162,7 @@ class Operation:
                 #     res = left_side / right_side
 
             else:
-
-                print("Type Error")
+                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
                 sys.exit()
 
     def add_substract_op(self):
@@ -187,7 +188,7 @@ class Operation:
                 # else:
                 #     res = left_side - right_side
             else:
-                print("Type Error")
+                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
                 sys.exit()
 
     def power_of_op(self):
@@ -212,7 +213,7 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error")
+                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
                 sys.exit()
 
     def assign_operation(self, identifier):
@@ -233,5 +234,5 @@ class Operation:
                     var['value'] = to_assign_value
                     self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['name'])
                 else:
-                    print("Type Error")
+                    print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
                     sys.exit()

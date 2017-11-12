@@ -1,0 +1,6 @@
+program operation;
+
+run
+  int a = 0;
+  a > 5;
+end

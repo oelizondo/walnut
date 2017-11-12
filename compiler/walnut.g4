@@ -44,8 +44,8 @@ functions : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T para
 function_body : LCB_T (blocks)* RETURN_T expression END_OF_STM_T RCB_T;
 function_body_no_return : LCB_T (blocks)* RCB_T;
 
-parameters : var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
-             | var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};
+parameters : var_type ID_T {#program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
+             | var_type ID_T {#program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};
 
 arguments : argument COMMA_T arguments
             | argument ;
@@ -60,6 +60,47 @@ blocks : expression END_OF_STM_T
          | write ;
 
 write : PRINT_T LP_T expression RP_T END_OF_STM_T ;
+
+loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {jump_eng.register_conditional()} RP_T LCB_T blocks* {jump_eng.fill_gotof()}RCB_T ;
+
+conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T  LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
+
+if_body: LP_T expression RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
+
+else_if_body: LP_T expression RP_T {jump_eng.register_elseif()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
+
+object_declaration : ID_T ID_T ASSIGN_T ID_T POINT_T NEW_T LP_T arguments? RP_T END_OF_STM_T;
+
+call_object_method : ID_T POINT_T ID_T LP_T arguments? RP_T;
+
+call_function : ID_T {program_engine.function_call($ID_T.text)} LP_T arguments? RP_T ;
+
+call_array : ID_T LB_T CTE_INT_T RB_T ;
+
+declaration_assignment : ((declaration | assignments) END_OF_STM_T)+ ;
+
+declaration : (array_declaration | var_declaration ) ;
+
+array_declaration : var_type ID_T LB_T CTE_INT_T RB_T {program_engine.register_variable($var_type.text, $ID_T.text)};
+
+var_declaration : var_type ID_T {program_engine.register_variable($var_type.text, $ID_T.text)};
+
+assignments : (array_assignment | var_assignment) ;
+
+array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
+
+var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)};
+
+var_type : INT_T|STRING_T|FLOAT_T|BOOLEAN_T ;
+
+constants : CTE_FLOAT_T
+            |CTE_INT_T
+            |CTE_STRING_T
+            |TRUE_T
+            |FALSE_T ;
+and_or_op: (OR_OP_T | AND_OP_T) ;
+mult_div_op : (MULTI_T|DIVISION_T) ;
+plus_minus_op : (PLUS_T | MINUS_T) ;
 
 expression : conditional_expression;
 
@@ -81,7 +122,11 @@ factor : power_of {operation.power_of_op()} POW_T  {operation.operator_stack.app
 power_of : atomic
            | LP_T {operation.operator_stack.append('(')}  expression  RP_T {operation.operator_stack.pop()} ;
 
-atomic : (ID_T|constants|call_object_method|call_function|call_array) {operation.add_identifier($ID_T.text, $constants.text, $call_object_method.text, $call_function.text, $call_array.text)};
+atomic : ID_T {operation.add_identifier($ID_T.text, None)};
+        |constants {operation.add_identifier(None, $constants.text)};
+        |call_object_method
+        |call_function
+        |call_array
 
 relop_tokens : EQUAL_T
                | NOT_EQUAL_T
@@ -89,48 +134,6 @@ relop_tokens : EQUAL_T
                | GREATER_EQ_T
                | LESS_T
                | GREATER_T ;
-
-declaration_assignment : ((declaration | assignments) END_OF_STM_T)+ ;
-
-declaration : (array_declaration | var_declaration ) ;
-
-array_declaration : var_type ID_T LB_T CTE_INT_T RB_T {program_engine.register_variable($var_type.text, $ID_T.text)};
-
-var_declaration : var_type ID_T {program_engine.register_variable($var_type.text, $ID_T.text)};
-
-assignments : (array_assignment | var_assignment) ;
-
-array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
-
-var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)};
-
-loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {jump_eng.register_conditional()} RP_T LCB_T blocks* {jump_eng.fill_gotof()}RCB_T ;
-
-conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T  LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
-
-if_body: LP_T expression RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
-
-else_if_body: LP_T expression RP_T {jump_eng.register_elseif()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
-
-object_declaration : ID_T ID_T ASSIGN_T ID_T POINT_T NEW_T LP_T arguments? RP_T END_OF_STM_T;
-
-call_object_method : ID_T POINT_T ID_T LP_T arguments? RP_T;
-
-call_function : ID_T {program_engine.function_call($ID_T.text)} LP_T arguments? RP_T ;
-
-call_array : ID_T LB_T CTE_INT_T RB_T ;
-
-var_type : INT_T|STRING_T|FLOAT_T|BOOLEAN_T ;
-
-constants : CTE_FLOAT_T
-            |CTE_INT_T
-            |CTE_STRING_T
-            |TRUE_T
-            |FALSE_T ;
-and_or_op: (OR_OP_T | AND_OP_T) ;
-mult_div_op : (MULTI_T|DIVISION_T) ;
-plus_minus_op : (PLUS_T | MINUS_T) ;
-
 
 /*
 * Lexer Rules
