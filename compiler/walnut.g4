@@ -18,7 +18,7 @@ jump_eng = JumpEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.reset_to_global()} functions* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {program_engine.print_classes()} ;
+program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.reset_to_global()} (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {program_engine.print_classes()} ;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -47,7 +47,7 @@ function_body_no_return : LCB_T (blocks)* RCB_T;
 parameters : var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
              | var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};
 
-arguments : argument {operation.argument_validation()} COMMA_T arguments 
+arguments : argument {operation.argument_validation()} COMMA_T arguments
             | argument {operation.argument_validation()};
 
 argument : expression ;
@@ -73,7 +73,7 @@ object_declaration : ID_T ID_T ASSIGN_T ID_T POINT_T NEW_T LP_T arguments? RP_T 
 
 call_object_method : ID_T POINT_T ID_T LP_T arguments? RP_T;
 
-call_function : ID_T {operation.current_function = $ID_T.text} LP_T (arguments)? {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} ;
+call_function : ID_T {operation.current_function = $ID_T.text} {program_engine.register_function_era($ID_T.text)} LP_T (arguments)? {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} ;
 
 call_array : ID_T LB_T CTE_INT_T RB_T ;
 

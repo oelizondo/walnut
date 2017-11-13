@@ -2,6 +2,8 @@ from semantic_cube import SemanticCube
 from cuadruple import Cuadruple
 import sys
 
+# % mark: refers to a constant
+
 def is_int(num):
     try:
         int(num)
@@ -99,6 +101,7 @@ class Operation:
             else:
                 self.type_stack.append('void')
             self.identifier_stack.append(header)
+            self.generate_cuad('gosub',None,None, str(function_recieved.get("starting_point")))
         else:
             print("function" + str(header) + "does not exist")
 
@@ -113,6 +116,7 @@ class Operation:
                 print("Type error in "+ str(self.current_function) +" function call in (" + str(self.parameter_counter + 1) + ") argument given: " + str(argument_type) + " expected: " + str(parameter_type))
                 sys.exit()
             self.parameter_counter += 1
+            self.generate_cuad('param',self.identifier_stack[len(self.identifier_stack)-1],None,'param'+str(self.parameter_counter))
         else:
             print("Argument error in "+ str(self.current_function) +" function call, expected only " + str(self.parameter_counter) + " argument(s)")
             sys.exit()

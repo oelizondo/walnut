@@ -27,6 +27,11 @@ class Engine:
         self.context.class_directory.add_class(header, extend, child_context)
         self.current_context = child_context
 
+    # This function registers the cuadruple that marks the beginning of a function call
+    def register_function_era(self, header):
+        cuad = Cuadruple('era',None,None,header)
+        self.cuadruples.append(cuad)
+
     # This function registers the main context, where our program will begin to run.
     # It inserts the first Cuadruple that will send it to main.
     def register_run_proc(self):

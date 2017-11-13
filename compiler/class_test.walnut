@@ -47,7 +47,7 @@ class Test2 extends ClassTest {
   }
 }
 
-func function1(int param1, string param2, int param3) : string {
+func doThis(int param1, string param2, int param3) : string {
   int a;
   a = param1 + param3;
 
@@ -68,5 +68,5 @@ run
   a = b;
   func3(5);
   string c;
-  c = function1(5,"string", 3) + "this string";
+  c = doThis(5*3+10,"string"+c, 3*4+12-4) + "this string";
 end
