@@ -1,3 +1,4 @@
+# void = -1
 # int = 0
 # float = 1
 # boolean = 2
@@ -37,9 +38,14 @@ class SemanticCube:
             # logic operations
             for i in range(10,18):
                 sem[(counter,counter,i)] = 2
+                if counter == 0:
+                    sem[(counter,1,i)] = 2
+                elif counter == 2:
+                    sem[(counter,0,i)] = 2
         # assing operations
             sem[(counter,counter,23)] = counter
         sem[(1,0,23)] = 1
+        sem[(0,1,23)] = 0
 
         # mathematic operations with numbers
         for counter in range(0,2):
@@ -59,7 +65,7 @@ class SemanticCube:
         return sem
 
     def generate_operator_converter(self):
-        return {'int':0,'float':1,'boolean':2,'string':3,'==':10, 'is': 10, '!=': 11,'not': 11,'and':12,'&&':12,'or':13,'||':13,'<=': 14,'>=': 15,'<': 16,'>':17,'/':19,'^':19,'*':20,'+':21,'-':22,'=':23,'!':24}
+        return {'void':-1,'int':0,'float':1,'boolean':2,'string':3,'==':10, 'is': 10, '!=': 11,'not': 11,'and':12,'&&':12,'or':13,'||':13,'<=': 14,'>=': 15,'<': 16,'>':17,'/':18,'^':19,'*':20,'+':21,'-':22,'=':23,'!':24}
 
     def generate_invert_converter(self):
         return {v: k for k, v in self.converter.iteritems()}

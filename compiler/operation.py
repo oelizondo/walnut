@@ -37,20 +37,20 @@ class Operation:
         self.semantic_cube = SemanticCube()
         self.program_engine = program_engine
         self.counter = 0
+        self.current_function = ''
+        self.parameter_counter = 0
 
     def generate_cuad(self, operation, left_side=None, right_side=None, result=None):
         cuad = Cuadruple(operation, left_side, right_side, result)
         self.program_engine.send_cuad(cuad)
 
-    def add_identifier(self, identifier, constant):
+    def add_identifier(self, identifier, constant, function):
         if identifier != None:
             self.add(identifier)
         elif constant != None:
             self.add_constant(constant)
         # elif obj != None:
         #     self.add_constant(obj)
-        # elif function != None:
-        #     self.add_constant(function)
         #  else:
         #     self.add_constant(array)
 
@@ -68,7 +68,9 @@ class Operation:
 
             if variable != None:
                 self.type_stack.append(str(var['type']))
-                self.identifier_stack.append(var['value'])
+                # self.identifier_stack.append(var['value'])
+                self.identifier_stack.append(str(variable))
+
     def add_constant(self, constant):
         if is_int(constant):
             self.type_stack.append('int')
@@ -86,6 +88,43 @@ class Operation:
             self.identifier_stack.append("%" + str(constant))
         else:
             print("Type Error could not add constant " + constant)
+            sys.exit()
+
+    # This function checks that the function called exists and sets the function "variable" in the identifier/type stack
+    def function_call(self, header):
+        function_recieved = self.program_engine.context.function_directory.functions.get(header,None)
+        if function_recieved != None:
+            if (function_recieved.get("return_type") != None):
+                self.type_stack.append(function_recieved["return_type"])
+            else:
+                self.type_stack.append('void')
+            self.identifier_stack.append(header)
+        else:
+            print("function" + str(header) + "does not exist")
+
+    # This function validates the parameter that is given in a function call. It checks that the argument type and parameter type
+    # are compatible and can be assigned. It also checks that the number of arguments given does not exeeds the permited.
+    def argument_validation(self):
+        function_parameters = self.program_engine.context.function_directory.functions[self.current_function].get('parameters')
+        if self.parameter_counter < len(function_parameters):
+            parameter_type = function_parameters[self.parameter_counter]
+            argument_type = self.type_stack[len(self.type_stack) - 1]
+            if parameter_type != argument_type :
+                print("Type error in "+ str(self.current_function) +" function call in (" + str(self.parameter_counter + 1) + ") argument given: " + str(argument_type) + " expected: " + str(parameter_type))
+                sys.exit()
+            self.parameter_counter += 1
+        else:
+            print("Argument error in "+ str(self.current_function) +" function call, expected only " + str(self.parameter_counter) + " argument(s)")
+            sys.exit()
+
+    # This function checks that the number of arguments given to the function call are complete and resets the parameter counter to 0
+    # to prepare it for next function calls
+    def argument_number_validation(self):
+        function_parameters = self.program_engine.context.function_directory.functions[self.current_function].get('parameters')
+        if self.parameter_counter == len(function_parameters):
+            self.parameter_counter = 0
+        else:
+            print("Argument error in "+ str(self.current_function) +" function call, expected " + str(len(function_parameters)) + " argument(s)")
             sys.exit()
 
     def compare_op(self):
@@ -111,7 +150,8 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
+                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
 
     def is_relational_op(self, op):
         return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '==' or op == 'is' or op == '!=' or op == 'not'
@@ -139,7 +179,8 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
+                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
     def multiply_divide_op(self):
@@ -165,7 +206,8 @@ class Operation:
                 #     res = left_side / right_side
 
             else:
-                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
+                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
     def add_substract_op(self):
@@ -191,7 +233,8 @@ class Operation:
                 # else:
                 #     res = left_side - right_side
             else:
-                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
+                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
     def power_of_op(self):
@@ -216,7 +259,8 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
+                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
     def assign_operation(self, identifier):
@@ -237,5 +281,9 @@ class Operation:
                     var['value'] = to_assign_value
                     self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['name'])
                 else:
-                    print("Type Error cannot " + str(self.semantic_cube.inverter[res_type]) + " values " + str(right_side) + " and " + str(left_side))
+                    print("Type Error cannot assign the value " + str(to_assign_value) + " to " + str(var['name']))
+                    if to_assign_type == 'void':
+                        print(str(to_assign_value) + " is a void function")
+                    else:
+                        print("incompatible types: " + str(to_assign_t) + " and " + str(var['type']))
                     sys.exit()

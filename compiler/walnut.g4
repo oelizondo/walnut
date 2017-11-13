@@ -44,13 +44,13 @@ functions : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T para
 function_body : LCB_T (blocks)* RETURN_T expression END_OF_STM_T RCB_T;
 function_body_no_return : LCB_T (blocks)* RCB_T;
 
-parameters : var_type ID_T {#program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
-             | var_type ID_T {#program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};
+parameters : var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
+             | var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};
 
-arguments : argument COMMA_T arguments
-            | argument ;
+arguments : argument {operation.argument_validation()} COMMA_T arguments 
+            | argument {operation.argument_validation()};
 
-argument : (constants | ID_T) ;
+argument : expression ;
 
 blocks : expression END_OF_STM_T
          | declaration_assignment
@@ -73,7 +73,7 @@ object_declaration : ID_T ID_T ASSIGN_T ID_T POINT_T NEW_T LP_T arguments? RP_T 
 
 call_object_method : ID_T POINT_T ID_T LP_T arguments? RP_T;
 
-call_function : ID_T {program_engine.function_call($ID_T.text)} LP_T arguments? RP_T ;
+call_function : ID_T {operation.current_function = $ID_T.text} LP_T (arguments)? {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} ;
 
 call_array : ID_T LB_T CTE_INT_T RB_T ;
 
@@ -89,7 +89,8 @@ assignments : (array_assignment | var_assignment) ;
 
 array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
 
-var_assignment : (var_type)? ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)};
+var_assignment : var_type ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)}
+                | ID_T ASSIGN_T expression {operation.assign_operation($ID_T.text)};
 
 var_type : INT_T|STRING_T|FLOAT_T|BOOLEAN_T ;
 
@@ -122,8 +123,8 @@ factor : power_of {operation.power_of_op()} POW_T  {operation.operator_stack.app
 power_of : atomic
            | LP_T {operation.operator_stack.append('(')}  expression  RP_T {operation.operator_stack.pop()} ;
 
-atomic : ID_T {operation.add_identifier($ID_T.text, None)}
-        |constants {operation.add_identifier(None, $constants.text)}
+atomic : ID_T {operation.add_identifier($ID_T.text, None, None)}
+        |constants {operation.add_identifier(None, $constants.text, None)}
         |call_object_method
         |call_function
         |call_array;
