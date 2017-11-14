@@ -6,9 +6,9 @@ class FunctionDirectory:
 
     def register(self, header, context, starting_point):
         self.functions[header] = {
-            'name': header,
+            'name': str(header),
             'context': context,
-            'starting_point': starting_point,
+            'starting_point': str(starting_point),
             'parameters' : []
         }
         self.last_registered = header

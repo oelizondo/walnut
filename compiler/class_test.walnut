@@ -10,7 +10,7 @@ class ClassTest {
   }
 
   methods {
-    func initializer() {
+    func initializer(int a, int b, int c) {
       int a = 1;
     }
     func doSomething() {
@@ -47,11 +47,11 @@ class Test2 extends ClassTest {
   }
 }
 
-func doThis(int param1, string param2, int param3) : string {
-  int a;
+func doThis(int param1, string param2, float param3) : float {
+  float a;
   a = param1 + param3;
 
-  return "hellow";
+  return doThis(param1,param2,param3);
 }
 
 func func2(int param1) : int {
@@ -62,11 +62,5 @@ func func3(int param2) {
   5*5;
 }
 run
-  float a = 5.0;
-  float b = 6.6;
-  a = 5.5;
-  a = b;
-  func3(5);
-  string c;
-  c = doThis(5*3+10,"string"+c, 3*4+12-4) + "this string";
+  Test2 obj = Test2.new(3, doThis(1,"s",doThis(1,"2",5.5)));
 end

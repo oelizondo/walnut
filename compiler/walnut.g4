@@ -18,7 +18,7 @@ jump_eng = JumpEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.reset_to_global()} (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {program_engine.print_classes()} ;
+program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.reset_to_global()} (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {# program_engine.print_classes()} ;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -47,8 +47,11 @@ function_body_no_return : LCB_T (blocks)* RCB_T;
 parameters : var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)} COMMA_T parameters
              | var_type ID_T {program_engine.current_context.function_directory.register_parameter($var_type.text, $ID_T.text)};
 
-arguments : argument {operation.argument_validation()} COMMA_T arguments
-            | argument {operation.argument_validation()};
+arguments : argument {operation.function_argument_validation()} COMMA_T arguments
+            | argument {operation.function_argument_validation()};
+
+obj_arguments : argument {operation.method_argument_validation()} COMMA_T obj_arguments
+                | argument {operation.method_argument_validation()};
 
 argument : expression ;
 
@@ -56,24 +59,29 @@ blocks : expression END_OF_STM_T
          | declaration_assignment
          | loops
          | conditional
-         | object_declaration
+         | object_declaration END_OF_STM_T
          | write ;
 
-write : PRINT_T LP_T expression RP_T END_OF_STM_T ;
+write : PRINT_T LP_T write_aux RP_T END_OF_STM_T;
 
-loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {jump_eng.register_conditional()} RP_T LCB_T blocks* {jump_eng.fill_gotof()}RCB_T ;
+write_aux: expression {operation.register_print()} COMMA_T write_aux
+          | expression {operation.register_print()};
+
+loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {operation.verify_boolean()} {jump_eng.register_conditional()} RP_T LCB_T blocks* {jump_eng.fill_gotof()}RCB_T ;
 
 conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T  LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
 
-if_body: LP_T expression RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
+if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
 
 else_if_body: LP_T expression RP_T {jump_eng.register_elseif()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
 
-object_declaration : ID_T ID_T ASSIGN_T ID_T POINT_T NEW_T LP_T arguments? RP_T END_OF_STM_T;
+object_declaration : ID_T {program_engine.register_new_object($ID_T.text)} object_declaration_aux ;
+object_declaration_aux: ID_T {program_engine.current_context.object_directory.assign_object($ID_T.text)} ASSIGN_T {program_engine.register_method_era("initializer")} object_initialization ;
+object_initialization: ID_T {program_engine.current_context.object_directory.validate_class_name($ID_T.text)} POINT_T NEW_T {operation.current_function = "initializer"} LP_T obj_arguments? {operation.method_argument_number_validation()} RP_T {operation.method_call(operation.current_function)};
 
 call_object_method : ID_T POINT_T ID_T LP_T arguments? RP_T;
 
-call_function : ID_T {operation.current_function = $ID_T.text} {program_engine.register_function_era($ID_T.text)} LP_T (arguments)? {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} ;
+call_function : ID_T {operation.save_status()} {operation.current_function = $ID_T.text} {program_engine.register_function_era($ID_T.text)} LP_T (arguments)? {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} {operation.reset_status()} ;
 
 call_array : ID_T LB_T CTE_INT_T RB_T ;
 
@@ -166,6 +174,7 @@ NEW_T : 'new';
 START_T : 'run' ;
 FINISH_T : 'end' ;
 PRINT_T : 'puts' ;
+OBJECT_INSTANCE_T : 'instantiate';
 
 EQUAL_T : '=='|'is' ;
 NOT_T : '!'|'not' ;
@@ -179,6 +188,7 @@ CTE_FLOAT_T : (DIGIT)+POINT_T(DIGIT)+ ;
 CTE_INT_T : DIGIT+ ;
 
 ID_T : LETTER(LETTER | '_' | DIGIT)* ;
+CLASS_ID_T : LETTER(LETTER | '_' | DIGIT)*;
 
 NOT_EQUAL_T : '!=' ;
 ASSIGN_T : '=' ;

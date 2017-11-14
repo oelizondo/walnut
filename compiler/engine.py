@@ -27,9 +27,20 @@ class Engine:
         self.context.class_directory.add_class(header, extend, child_context)
         self.current_context = child_context
 
+    def register_new_object(self,header):
+        walnut_class = self.context.class_directory.classes.get(header,None)
+        if(walnut_class != None):
+            self.current_context.object_directory.add_object(walnut_class)
+        else:
+            print("Cannot instantiate object, class: " + str(header) + " does not exist")
+
+    def register_method_era(self,header):
+        obj = self.current_context.object_directory.current_object
+        self.register_function_era(header,obj.name)
+
     # This function registers the cuadruple that marks the beginning of a function call
-    def register_function_era(self, header):
-        cuad = Cuadruple('era',None,None,header)
+    def register_function_era(self, header, obj=None):
+        cuad = Cuadruple('era',obj,None,header)
         self.cuadruples.append(cuad)
 
     # This function registers the main context, where our program will begin to run.
