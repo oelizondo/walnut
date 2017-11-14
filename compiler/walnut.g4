@@ -18,7 +18,7 @@ jump_eng = JumpEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T global_variables? classes* {program_engine.reset_to_global()} (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {# program_engine.print_classes()} ;
+program : PROGRAM_T ID_T END_OF_STM_T classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {# program_engine.print_classes()} ;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 

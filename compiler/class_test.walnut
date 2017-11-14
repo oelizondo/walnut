@@ -1,9 +1,5 @@
 program test;
 
-globals {
-  int as = 1002;
-}
-
 class ClassTest {
   attributes {
     int parent;
@@ -47,6 +43,10 @@ class Test2 extends ClassTest {
   }
 }
 
+globals {
+  int as = 1002;
+}
+
 func doThis(int param1, string param2, float param3) : float {
   float a;
   a = param1 + param3;
@@ -61,6 +61,8 @@ func func2(int param1) : int {
 func func3(int param2) {
   5*5;
 }
+
 run
   Test2 obj = Test2.new(3, doThis(1,"s",doThis(1,"2",5.5)));
+  obj.somethingElse();
 end

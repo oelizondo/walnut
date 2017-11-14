@@ -90,6 +90,7 @@ func function1(int param1, string param2) : string {
 }
 
 run
+<<<<<<< Updated upstream
   boolean a = true;
   boolean b = false;
   if (a == b) {
@@ -124,4 +125,10 @@ run
   }
 
   int finished = 0;
+=======
+  int b = 10;
+  int c = 10;
+  float d = 0.5;
+  d = z * (a + b + c * d);
+>>>>>>> Stashed changes
 end
