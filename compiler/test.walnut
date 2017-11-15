@@ -4,131 +4,13 @@ globals {
   int as = 1002;
 }
 
-class ClassTest {
-  attributes {
-    int parent;
-  }
-
-  methods {
-    func initializer() {
-      int a = 1;
-    }
-    func doSomething() {
-      int cosa = 12434;
-    }
-  }
-}
-
-class Test2 extends ClassTest {
-  attributes {
-    int a;
-    float b;
-  }
-
-  methods {
-    func initializer(int a, float b) {
-      boolean x = 10 - 15 * 12 < 14 + 14 * 45 ^ 34;
-    }
-    func doSomething(int a, float b) : string {
-      return 5;
-    }
-  }
-}
-
-class Test3 extends Test2 {
-  attributes {
-    int a;
-    float b;
-  }
-
-  methods {
-    func initializer(int a, float b) {
-      boolean x = 10 - 15 * 12 < 14 + 14 * 45 ^ 34;
-    }
-    func doSomething(int a, float b) : string {
-      int a = 5 + 5;
-      return 5;
-    }
-    func somethingElse(int this, int that) : int {
-      int b = 5 + 10;
-      return 5;
-    }
-
-  }
-}
-
-class Test4 extends Test3 {
-  attributes {
-    int a;
-    float b;
-  }
-
-  methods {
-    func initializer(int a, float b) {
-      boolean x = 10 - 15 * 12 < 14 + 14 * 45 ^ 34;
-    }
-    func doSomething(int a, float b) : string {
-      int a = 5 + 5;
-      return 5;
-    }
-    func somethingElse(int this, int that) : int {
-      int b = 5 + 10;
-      return 5;
-    }
-
-  }
-}
-
-func function1(int param1, string param2) : string {
-  if(5 < 7) {
-    5;
-  }
-  else {
-    0;
-  }
-  return 5;
+func function1(int param1, int param2) : int {
+  return param1;
 }
 
 run
-<<<<<<< Updated upstream
-  boolean a = true;
-  boolean b = false;
-  if (a == b) {
-    int v = 10;
-    int z = 12 * 32;
-  } elseif (b != a) {
-    float a = 20.0;
-    int j = 500;
-  } elseif (10 - 15 * 12 < 14 + 14 * 45 ^ 34) {
-    int t = 1000000;
-  } else {
-    int p = 500;
-  }
-
-  int middle = 6;
-
-  if(5 < 6) {
-    5 * 5;
-  }
-  else {
-    6*5;
-  }
-
-  while(5 * 7 ^ 6 + 5){
-    middle + 1;
-    if(middle < p) {
-      middle + 2;
-    }
-    else{
-      middle + 1;
-    }
-  }
-
-  int finished = 0;
-=======
-  int b = 10;
-  int c = 10;
-  float d = 0.5;
-  d = z * (a + b + c * d);
->>>>>>> Stashed changes
+  int a;
+  int b;
+  b = 1;
+  a = function1(1,2) + function1(2,function1(1,2));
 end

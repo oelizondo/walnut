@@ -42,6 +42,7 @@ class Operation:
         self.program_engine = program_engine
         self.counter = 0
         self.current_function = ''
+        self.current_object = ''
         self.parameter_counter = 0
 
     def generate_cuad(self, operation, left_side=None, right_side=None, result=None):
@@ -97,6 +98,13 @@ class Operation:
         else:
             print("function" + str(header) + "does not exist")
 
+    def function_return_save(self):
+        function_id = self.identifier_stack.pop()
+        temporal_id = "temp" + str(self.counter)
+        self.identifier_stack.append(temporal_id)
+        self.counter += 1
+        self.generate_cuad(23,function_id,None,temporal_id)
+
     # This function validates the parameter that is given in a function call. It checks that the argument type and parameter type
     # are compatible and can be assigned. It also checks that the number of arguments given does not exeeds the permited.
     def function_argument_validation(self):
@@ -104,12 +112,13 @@ class Operation:
         function_parameters = func.get('parameters')
         if self.parameter_counter < len(function_parameters):
             parameter_type = function_parameters[self.parameter_counter]
-            argument_type = self.type_stack[len(self.type_stack) - 1]
+            argument_type = self.type_stack.pop()
             if parameter_type != argument_type :
                 print("Type error in "+ str(self.current_function) +" function call in (" + str(self.parameter_counter + 1) + ") argument given: " + str(argument_type) + " expected: " + str(parameter_type))
                 sys.exit()
             self.parameter_counter += 1
             self.generate_cuad('param',self.identifier_stack[len(self.identifier_stack)-1],None,'param'+str(self.parameter_counter))
+            self.identifier_stack.pop()
         else:
             print("Argument error in "+ str(self.current_function) +" function call, expected only " + str(self.parameter_counter) + " argument(s)")
             sys.exit()
@@ -128,23 +137,24 @@ class Operation:
 
     def method_argument_validation(self):
         obj_context = self.get_object_context()
-        func = self.find_function(self.current_function, obj_context)
+        func = self.find_obj_function(self.current_function, obj_context)
         function_parameters = func.get('parameters')
         if self.parameter_counter < len(function_parameters):
             parameter_type = function_parameters[self.parameter_counter]
-            argument_type = self.type_stack[len(self.type_stack) - 1]
+            argument_type = self.type_stack.pop()
             if parameter_type != argument_type :
                 print("Type error in "+ str(self.current_function) +" function call in (" + str(self.parameter_counter + 1) + ") argument given: " + str(argument_type) + " expected: " + str(parameter_type))
                 sys.exit()
             self.parameter_counter += 1
             self.generate_cuad('param',self.identifier_stack[len(self.identifier_stack)-1],None,'param'+str(self.parameter_counter))
+            self.identifier_stack.pop()
         else:
             print("Argument error in object "+ str(self.current_function) +" function call, expected only " + str(self.parameter_counter) + " argument(s)")
             sys.exit()
 
     def method_argument_number_validation(self):
         obj_context = self.get_object_context()
-        func = self.find_function(self.current_function, obj_context)
+        func = self.find_obj_function(self.current_function, obj_context)
         function_parameters = func.get('parameters')
         if self.parameter_counter == len(function_parameters):
             self.parameter_counter = 0
@@ -154,7 +164,7 @@ class Operation:
 
     def method_call(self, header):
         obj_context = self.get_object_context()
-        function_recieved = self.find_function(header, obj_context)
+        function_recieved = self.find_obj_function(header, obj_context)
         if function_recieved != None:
             if (function_recieved.get("return_type") != None):
                 self.type_stack.append(function_recieved["return_type"])
@@ -310,11 +320,11 @@ class Operation:
                 var['value'] = to_assign_value
                 self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['name'])
             else:
-                print("Type Error cannot assign the value " + str(to_assign_value) + " to " + str(var['name']))
+                print("Type Error: cannot assign the value to " + str(var['name']))
                 if to_assign_type == 'void':
-                    print(str(to_assign_value) + " is a void function")
+                    print("value is from a void function")
                 else:
-                    print("incompatible types: " + str(to_assign_t) + " and " + str(var['type']))
+                    print("incompatible types: " + str(to_assign_type) + " and " + str(var['type']))
                 sys.exit()
 
     def find_var(self, variable):
@@ -342,9 +352,36 @@ class Operation:
         else:
             return func
 
+    def find_obj_function(self, function, starting_context):
+        func = None
+        while func == None and starting_context.parent != None:
+            func = starting_context.function_directory.functions.get(function, None)
+            starting_context = starting_context.parent
+
+        if func == None:
+            print("function: " + function + " for object: " + self.current_object + " doesn't exist")
+            sys.exit()
+        else:
+            return func
+
     def get_object_context(self):
-        return self.program_engine.current_context.object_directory.current_object.walnut_class.context
+        obj = None
+        starting_context = self.program_engine.current_context
+
+        while obj == None and starting_context != None:
+            obj = starting_context.object_directory.objects.get(self.current_object,None)
+            starting_context = starting_context.parent
+
+        if starting_context == None and obj == None:
+            print("Object " + self.current_object + " is not declared")
+            sys.exit()
+        else:
+            return obj['obj'].walnut_class.context
         # print(self.program_engine.current_context.object_directory.current_object.walnut_class.context.function_directory.functions['initializer'])
+
+    def set_current_object(self, header):
+        self.current_object = header
+        self.program_engine.current_object = header
 
     def reset_status(self):
         self.parameter_counter = self.param_counter_stack.pop()

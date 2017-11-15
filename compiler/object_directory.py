@@ -13,7 +13,10 @@ class ObjectDirectory:
 
     def assign_object(self, object_id):
         self.current_object.name = str(object_id)
-        self.objects.update({self.current_class : self.current_object})
+        self.objects[object_id] = {
+            'obj' : self.current_object,
+            'class' : self.current_object.walnut_class
+        }
 
     def validate_class_name(self, class_name):
         if self.current_class != class_name:

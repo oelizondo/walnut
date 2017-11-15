@@ -7,6 +7,7 @@ class Engine:
         self.cuadruples = []
         self.context = Context('GLOBAL')
         self.current_context = self.context
+        self.current_object = ''
         self.jump_stack = []
 
     def register_variable(self, var_type, identifier, value=None):
@@ -35,8 +36,7 @@ class Engine:
             print("Cannot instantiate object, class: " + str(header) + " does not exist")
 
     def register_method_era(self,header):
-        obj = self.current_context.object_directory.current_object
-        self.register_function_era(header,obj.name)
+        self.register_function_era(header,self.current_object)
 
     # This function registers the cuadruple that marks the beginning of a function call
     def register_function_era(self, header, obj=None):
@@ -60,7 +60,7 @@ class Engine:
 
     # This function validates that the return type is the same as the one declared in the function
     def register_return(self, function_name, return_variable, return_type):
-        function = self.context.function_directory.functions.get(function_name)
+        function = self.current_context.parent.function_directory.functions.get(function_name)
         function_return_type = function.get("return_type")
         if function_return_type == return_type:
             cuad = Cuadruple('return', None, None, return_variable)

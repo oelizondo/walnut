@@ -18,7 +18,7 @@ jump_eng = JumpEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {# program_engine.print_classes()} ;
+program : PROGRAM_T ID_T END_OF_STM_T classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {#program_engine.print_classes()} ;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -35,7 +35,7 @@ class_methods : METHODS_T LCB_T initializer {program_engine.register_end_proc()}
 
 initializer : FUNC_T INIT_T {program_engine.register_function($INIT_T.text)} LP_T parameters? RP_T LCB_T blocks* RCB_T {program_engine.reset_context()} ;
 
-method_declaration : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.reset_context()}
+method_declaration : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.register_return($ID_T.text,operation.identifier_stack[-1],operation.type_stack[-1])} {program_engine.reset_context()}
                     | FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T function_body_no_return {program_engine.reset_context()};
 
 functions : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T RETURN_TYPE_T var_type {program_engine.current_context.function_directory.register_return_type($ID_T.text, $var_type.text)} function_body {program_engine.register_return($ID_T.text,operation.identifier_stack[-1],operation.type_stack[-1])} {program_engine.reset_context()}
@@ -51,7 +51,7 @@ arguments : argument {operation.function_argument_validation()} COMMA_T argument
             | argument {operation.function_argument_validation()};
 
 obj_arguments : argument {operation.method_argument_validation()} COMMA_T obj_arguments
-                | argument {operation.method_argument_validation()};
+                | argument {operation.method_argument_validation()} ;
 
 argument : expression ;
 
@@ -76,18 +76,19 @@ if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_co
 else_if_body: LP_T expression RP_T {jump_eng.register_elseif()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
 
 object_declaration : ID_T {program_engine.register_new_object($ID_T.text)} object_declaration_aux ;
-object_declaration_aux: ID_T {program_engine.current_context.object_directory.assign_object($ID_T.text)} ASSIGN_T {program_engine.register_method_era("initializer")} object_initialization ;
-object_initialization: ID_T {program_engine.current_context.object_directory.validate_class_name($ID_T.text)} POINT_T NEW_T {operation.current_function = "initializer"} LP_T obj_arguments? {operation.method_argument_number_validation()} RP_T {operation.method_call(operation.current_function)};
+object_declaration_aux: ID_T {program_engine.current_context.object_directory.assign_object($ID_T.text)} {operation.set_current_object(str($ID_T.text))} ASSIGN_T {program_engine.register_method_era("initializer")} object_initialization ;
+object_initialization: ID_T {program_engine.current_context.object_directory.validate_class_name($ID_T.text)} POINT_T NEW_T {operation.current_function = "initializer"} LP_T {operation.operator_stack.append('(')} obj_arguments? {operation.operator_stack.pop()} {operation.method_argument_number_validation()} RP_T {operation.method_call(operation.current_function)};
 
-call_object_method : ID_T POINT_T ID_T LP_T arguments? RP_T;
+call_object_method : ID_T {operation.save_status()} {operation.set_current_object(str($ID_T.text))} object_method;
+object_method : POINT_T ID_T {operation.current_function = $ID_T.text} {program_engine.register_method_era($ID_T.text)} LP_T {operation.operator_stack.append('(')} obj_arguments? {operation.operator_stack.pop()} {operation.method_argument_number_validation()} RP_T {operation.method_call(operation.current_function)} {operation.function_return_save()} {operation.reset_status()} ;
 
-call_function : ID_T {operation.save_status()} {operation.current_function = $ID_T.text} {program_engine.register_function_era($ID_T.text)} LP_T (arguments)? {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} {operation.reset_status()} ;
+call_function : ID_T {operation.save_status()} {operation.current_function = $ID_T.text} {program_engine.register_function_era($ID_T.text)} LP_T {operation.operator_stack.append('(')} (arguments)? {operation.operator_stack.pop()} {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} {operation.function_return_save()} {operation.reset_status()} ;
 
 call_array : ID_T LB_T CTE_INT_T RB_T ;
 
 declaration_assignment : ((declaration | assignments) END_OF_STM_T)+ ;
 
-declaration : (array_declaration | var_declaration ) ;
+declaration : (array_declaration | var_declaration | object_declaration) ;
 
 array_declaration : var_type ID_T LB_T CTE_INT_T RB_T {program_engine.register_variable($var_type.text, $ID_T.text)};
 

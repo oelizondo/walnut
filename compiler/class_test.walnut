@@ -7,10 +7,14 @@ class ClassTest {
 
   methods {
     func initializer(int a, int b, int c) {
-      int a = 1;
+      int a;
     }
     func doSomething() {
       int cosa = 12434;
+    }
+
+    func parent_function(string a, string c) : string {
+      return a;
     }
   }
 }
@@ -33,11 +37,11 @@ class Test2 extends ClassTest {
       else {
 
       }
-      return 5;
+      return "string";
     }
     func somethingElse(int this, int that) : int {
       int b = 5 + 10;
-      return 5;
+      return b*5+2;
     }
 
   }
@@ -45,17 +49,20 @@ class Test2 extends ClassTest {
 
 globals {
   int as = 1002;
+  Test2 obj = Test2.new(3,2.2);
+  ClassTest obj2 = ClassTest.new(1,2,3);
+  as = obj.somethingElse(as,3);
 }
 
-func doThis(int param1, string param2, float param3) : float {
+func doThis(int param1, string param2, float param3) : int {
   float a;
   a = param1 + param3;
 
-  return doThis(param1,param2,param3);
+  return obj.somethingElse(1,2);
 }
 
-func func2(int param1) : int {
-  return 5;
+func func2(int param1, int param2, int param3) : string {
+  return "this";
 }
 
 func func3(int param2) {
@@ -63,6 +70,7 @@ func func3(int param2) {
 }
 
 run
-  Test2 obj = Test2.new(3, doThis(1,"s",doThis(1,"2",5.5)));
-  obj.somethingElse();
+  string c;
+  c = func2(1,2,3) + func2(2,2,3) + func2(2,3,3);
+  c = obj.parent_function("a","b") + obj2.parent_function("b","3") + obj.doSomething(doThis(1,"string",5/3),5*3/12);
 end
