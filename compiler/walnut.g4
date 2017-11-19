@@ -66,18 +66,24 @@ blocks : expression END_OF_STM_T
          | object_declaration END_OF_STM_T
          | write ;
 
+conditional_blocks: expression END_OF_STM_T
+                   | (assignments END_OF_STM_T)+
+                   | loops
+                   | conditional
+                   | write ;
+
 write : PRINT_T LP_T write_aux RP_T END_OF_STM_T;
 
 write_aux: expression {operation.register_print()} COMMA_T write_aux
           | expression {operation.register_print()};
 
-loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {operation.verify_boolean()} {jump_eng.register_conditional()} RP_T LCB_T blocks* RCB_T {jump_eng.fill_gotof()} ;
+loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {operation.verify_boolean()} {jump_eng.register_conditional()} RP_T LCB_T conditional_blocks* RCB_T {jump_eng.fill_gotof()} ;
 
-conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
+conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T LCB_T conditional_blocks* {jump_eng.fill_gotos()} RCB_T ;
 
-if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
+if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_conditional()} LCB_T conditional_blocks* {jump_eng.register_goto()} RCB_T ;
 
-else_if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
+else_if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_conditional()} LCB_T conditional_blocks* {jump_eng.register_goto()} RCB_T ;
 
 object_declaration : ID_T {program_engine.register_new_object($ID_T.text)} object_declaration_aux ;
 object_declaration_aux: ID_T {program_engine.current_context.object_directory.assign_object($ID_T.text)} {operation.set_current_object(str($ID_T.text))} ASSIGN_T {program_engine.register_method_era("initializer")} object_initialization ;
