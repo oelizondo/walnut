@@ -41,6 +41,7 @@ class JumpEngine:
             goto = self.goto_stack.pop()
             cuad = cuads[goto]
             cuad.result = len(cuads)
+
     def insert_jump(self):
         cuads = self.program_engine.cuadruples
         jump = len(cuads)

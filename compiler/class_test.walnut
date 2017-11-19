@@ -2,7 +2,7 @@ program test;
 
 class ClassTest {
   attributes {
-    int parent;
+    string parent;
   }
 
   methods {
@@ -14,7 +14,7 @@ class ClassTest {
     }
 
     func parent_function(string a, string c) : string {
-      return a;
+      return parent;
     }
   }
 }
@@ -31,10 +31,8 @@ class Test2 extends ClassTest {
     }
     func doSomething(int a, float b) : string {
       if(a < 5) {
-
       }
       else {
-
       }
       return "string";
     }

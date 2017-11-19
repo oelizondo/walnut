@@ -9,9 +9,11 @@ class Engine:
         self.current_context = self.context
         self.current_object = ''
         self.jump_stack = []
+        self.memory_direction = 1000
 
     def register_variable(self, var_type, identifier, value=None, dimension=None, finish=None):
-        self.current_context.variable_directory.register(var_type, identifier, value, dimension, finish)
+        vm_direction = self.get_next_virtual_memory()
+        self.current_context.variable_directory.register(var_type, identifier, value, vm_direction, dimension, finish)
 
     # This function registers in the global context the function that is being declared
     # setting its name, context and starting point as well as chaging the current context to the function's.
@@ -35,12 +37,16 @@ class Engine:
         else:
             print("Cannot instantiate object, class: " + str(header) + " does not exist")
 
+    def register_function_return_type(self,header,var_type):
+        vm_direction = self.get_next_virtual_memory()
+        self.current_context.function_directory.register_return_type(header, var_type, vm_direction)
+
     def register_method_era(self,header):
-        self.register_function_era(header,self.current_object)
+        self.register_function_era(str(header),self.current_object)
 
     # This function registers the cuadruple that marks the beginning of a function call
     def register_function_era(self, header, obj=None):
-        cuad = Cuadruple('era',obj,None,header)
+        cuad = Cuadruple('era',obj,None,str(header))
         self.cuadruples.append(cuad)
 
     # This function registers the main context, where our program will begin to run.
@@ -87,6 +93,11 @@ class Engine:
 
     def send_cuad(self, cuad):
         self.cuadruples.append(cuad)
+
+    def get_next_virtual_memory(self):
+        next_avail = self.memory_direction
+        self.memory_direction += 1
+        return next_avail
 
     def print_quads(self):
         count = 0

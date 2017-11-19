@@ -67,7 +67,7 @@ class Operation:
             if var['dimension'] == None:
                 self.type_stack.append(str(var['type']))
                 # self.identifier_stack.append(var['value'])
-                self.identifier_stack.append(str(variable))
+                self.identifier_stack.append(var['vm_direction'])
             else:
                 print("Variable " + var['name'] + " is dimensioned.")
                 sys.exit()
@@ -106,10 +106,10 @@ class Operation:
 
     def function_return_save(self):
         function_id = self.identifier_stack.pop()
-        temporal_id = "temp" + str(self.counter)
-        self.identifier_stack.append(temporal_id)
+        temp_var = self.generate_temporal(self.type_stack[-1])
+        self.identifier_stack.append(temp_var['vm_direction'])
         self.counter += 1
-        self.generate_cuad(23,function_id,None,temporal_id)
+        self.generate_cuad(23,str(function_id),None,temp_var['vm_direction'])
 
     # This function validates the parameter that is given in a function call. It checks that the argument type and parameter type
     # are compatible and can be assigned. It also checks that the number of arguments given does not exeeds the permited.
@@ -182,9 +182,10 @@ class Operation:
             print("function" + str(header) + "does not exist")
 
     def register_parameter(self,var_type,header):
-        self.program_engine.current_context.function_directory.register_parameter(var_type, header)
+        vm_direction = self.program_engine.get_next_virtual_memory()
+        self.program_engine.current_context.function_directory.register_parameter(var_type, header, vm_direction)
         var = self.find_var(header)
-        self.generate_cuad(23,'param'+ str(self.parameter_counter+1), None, var['name'])
+        self.generate_cuad(23,'param'+ str(self.parameter_counter+1), None, var['vm_direction'])
         self.parameter_counter += 1
 
     def compare_op(self):
@@ -192,27 +193,7 @@ class Operation:
             return
         op = self.operator_stack[-1]
         if op == '&&' or op == '||' or op == 'and' or op == 'or':
-            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
-            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            right_side = extract_value(self.identifier_stack.pop())
-            left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
-            if res_type != None:
-                temporal_id = "temp" + str(self.counter)
-                self.generate_cuad(op, left_side, right_side, temporal_id)
-                self.program_engine.register_variable(res_type, temporal_id, None)
-                self.counter += 1
-                self.type_stack.append(self.semantic_cube.inverter[res_type])
-                self.identifier_stack.append(temporal_id)
-                # if op == 20:
-                #     res = left_side * right_side
-                # else:
-                #     res = left_side / right_side
-            else:
-                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
-                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
-                sys.exit()
+            self.operation_semantic_validation()
 
     def is_relational_op(self, op):
         return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '==' or op == 'is' or op == '!=' or op == 'not'
@@ -222,107 +203,27 @@ class Operation:
             return
         op = self.operator_stack[-1]
         if self.is_relational_op(op):
-            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
-            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            right_side = extract_value(self.identifier_stack.pop())
-            left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
-            if res_type != None:
-                temporal_id = "temp" + str(self.counter)
-                self.generate_cuad(op, left_side, right_side, temporal_id)
-                self.program_engine.register_variable(res_type, temporal_id, None)
-                self.counter += 1
-                self.type_stack.append(self.semantic_cube.inverter[res_type])
-                self.identifier_stack.append(temporal_id)
-                # if op == 20:
-                #     res = left_side * right_side
-                # else:
-                #     res = left_side / right_side
-            else:
-                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
-                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
-                sys.exit()
+            self.operation_semantic_validation()
 
     def multiply_divide_op(self):
         if len(self.operator_stack) == 0:
             return
         if self.operator_stack[-1] == '*' or self.operator_stack[-1] == '/':
-            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
-            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            right_side = extract_value(self.identifier_stack.pop())
-            left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
-            if res_type != None:
-                temporal_id = "temp" + str(self.counter)
-                self.generate_cuad(op, left_side, right_side, temporal_id)
-                self.program_engine.register_variable(res_type, temporal_id, None)
-                self.counter += 1
-                self.type_stack.append(self.semantic_cube.inverter[res_type])
-                self.identifier_stack.append(temporal_id)
-                # if op == 20:
-                #     res = left_side * right_side
-                # else:
-                #     res = left_side / right_side
-
-            else:
-                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
-                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
-                sys.exit()
+            self.operation_semantic_validation()
 
     def add_substract_op(self):
         if len(self.operator_stack) == 0:
             return
 
         if self.operator_stack[-1] == '-' or self.operator_stack[-1] == '+':
-            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
-            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            right_side = extract_value(self.identifier_stack.pop())
-            left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
-            if res_type != None:
-                temporal_id = "temp" + str(self.counter)
-                self.generate_cuad(op, left_side, right_side, temporal_id)
-                self.program_engine.register_variable(res_type, temporal_id, None)
-                self.counter += 1
-                self.type_stack.append(self.semantic_cube.inverter[res_type])
-                self.identifier_stack.append(temporal_id)
-                # if op == 21:
-                #     res = left_side + right_side
-                # else:
-                #     res = left_side - right_side
-            else:
-                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
-                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
-                sys.exit()
+            self.operation_semantic_validation()
 
     def power_of_op(self):
         if len(self.operator_stack) == 0:
             return
         if self.operator_stack[-1] == '^':
-            op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
-            type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
-            right_side = extract_value(self.identifier_stack.pop())
-            left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
-            if res_type != None:
-                temporal_id = "temp" + str(self.counter)
-                self.generate_cuad(op, left_side, right_side, temporal_id)
-                self.program_engine.register_variable(res_type, temporal_id, None)
-                self.counter += 1
-                self.type_stack.append(self.semantic_cube.inverter[res_type])
-                self.identifier_stack.append(temporal_id)
-                # if op == '*':
-                #     res = left_side * right_side
-                # else:
-                #     res = left_side / right_side
-            else:
-                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
-                print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
-                sys.exit()
+            self.operation_semantic_validation()
+
 
     def assign_operation(self, identifier):
         if identifier != None:
@@ -334,7 +235,7 @@ class Operation:
             res_type = self.semantic_cube.semantic_cube.get((to_be_assigned, to_assign_type, 23), None)
             if res_type != None:
                 var['value'] = to_assign_value
-                self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['name'])
+                self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['vm_direction'])
             else:
                 print("Type Error: cannot assign the value to " + str(var['name']))
                 if to_assign_type == 'void':
@@ -342,6 +243,24 @@ class Operation:
                 else:
                     print("incompatible types: " + str(to_assign_type) + " and " + str(var['type']))
                 sys.exit()
+
+    def operation_semantic_validation(self):
+        op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
+        type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+        type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
+        right_side = extract_value(self.identifier_stack.pop())
+        left_side = extract_value(self.identifier_stack.pop())
+        res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
+        if res_type != None:
+            temp_var = self.generate_temporal(res_type)
+            self.generate_cuad(op, left_side, right_side, temp_var['vm_direction'])
+            self.counter += 1
+            self.type_stack.append(self.semantic_cube.inverter[res_type])
+            self.identifier_stack.append(temp_var['vm_direction'])
+        else:
+            print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
+            print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
+            sys.exit()
 
     def find_var(self, variable):
         starting_context = self.program_engine.current_context
@@ -433,8 +352,8 @@ class Operation:
 
             if len(self.collection['dimension']) > self.dimension_stack[-1][1]:
                 aux = self.identifier_stack.pop()
-                temp = self.generate_temporal()
-                self.generate_cuad(self.semantic_cube.converter['*'], aux, '%' + str(self.collection['dimension'][cell]['k']), temp)
+                temp = self.generate_temporal('int')
+                self.generate_cuad(self.semantic_cube.converter['*'], aux, '%' + str(self.collection['dimension'][cell]['k']), temp['vm_direction'])
                 self.identifier_stack.append(temp)
                 self.type_stack.append('int')
 
@@ -442,8 +361,8 @@ class Operation:
             if  self.dimension_stack[-1][1] > 1:
                 aux1 = self.identifier_stack.pop()
                 aux2 = self.identifier_stack.pop()
-                temp = self.generate_temporal()
-                self.generate_cuad(self.semantic_cube.converter['+'], aux1, aux2, temp)
+                temp = self.generate_temporal('int')
+                self.generate_cuad(self.semantic_cube.converter['+'], aux1, aux2, temp['vm_direction'])
                 self.identifier_stack.append(temp)
                 self.type_stack.append('int')
         else:
@@ -468,10 +387,10 @@ class Operation:
 
     def finish_collection_access(self):
         aux = self.identifier_stack.pop()
-        temp = self.generate_temporal()
+        temp = self.generate_temporal(self.collection['type'])
         self.generate_cuad(self.semantic_cube.converter['+'], aux, 0, temp)
-        self.generate_cuad(self.semantic_cube.converter['+'], temp, self.dimension_stack[-1][0], temp)
-        self.identifier_stack.append('('+temp+')')
+        self.generate_cuad(self.semantic_cube.converter['+'], temp['vm_direction'], self.dimension_stack[-1][0], temp['vm_direction'])
+        self.identifier_stack.append('('+temp['vm_direction']+')')
         self.type_stack.append(self.collection['type'])
         self.operator_stack.pop()
         self.dimension_stack.pop()
@@ -480,9 +399,12 @@ class Operation:
             self.collection = self.find_var(str(self.collection_names[-1]))
 
     def register_print(self):
-        value_to_print = self.identifier_stack[len(self.type_stack) - 1]
+        value_to_print = self.identifier_stack[-1]
         self.generate_cuad('puts',None,None,str(value_to_print))
 
-    def generate_temporal(self):
+    def generate_temporal(self, temporal_type):
+        temporal_id = "temp" + str(self.counter)
         self.counter += 1
-        return "temp" + str(self.counter)
+        self.program_engine.register_variable(temporal_type, temporal_id, None)
+        temp_var = self.find_var(temporal_id)
+        return temp_var
