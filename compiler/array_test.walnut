@@ -1,0 +1,18 @@
+program
+test
+;
+
+globals
+ {
+  int a[10][10];
+  int b[5];
+}
+
+func retFloat(int a) : float {
+  return a/5;
+}
+
+run
+string d;
+d =  retFloat(a[5][5]) * 5;
+end

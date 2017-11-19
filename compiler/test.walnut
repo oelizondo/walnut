@@ -4,8 +4,8 @@ globals {
   int as = 1002;
 }
 
-func function1(int param1, int param2) : int {
-  return param1;
+func function1(int a, int b) : int {
+  return a;
 }
 
 run

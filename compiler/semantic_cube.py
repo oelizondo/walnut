@@ -1,3 +1,5 @@
+# keys goes as follows: (left_side,rigth_side,operator)
+
 # void = -1
 # int = 0
 # float = 1
@@ -39,13 +41,13 @@ class SemanticCube:
             for i in range(10,18):
                 sem[(counter,counter,i)] = 2
                 if counter == 0:
-                    sem[(counter,1,i)] = 2
+                    sem[(1,counter,i)] = 2
                 elif counter == 2:
-                    sem[(counter,0,i)] = 2
+                    sem[(0,counter,i)] = 2
         # assing operations
             sem[(counter,counter,23)] = counter
-        sem[(1,0,23)] = 1
-        sem[(0,1,23)] = 0
+        sem[(0,1,23)] = 1
+        sem[(1,0,23)] = 0
 
         # mathematic operations with numbers
         for counter in range(0,2):
@@ -57,7 +59,7 @@ class SemanticCube:
             else:
                 aux = 0
             for i in range(18,23):
-                sem[(counter,aux,i)] = 1
+                sem[(aux,counter,i)] = 1
         # string concatenation
         sem[(3,3,21)] = 3
         #negation

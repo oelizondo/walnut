@@ -7,7 +7,7 @@ class ClassTest {
 
   methods {
     func initializer(int a, int b, int c) {
-      int a;
+      int z;
     }
     func doSomething() {
       int cosa = 12434;
@@ -30,7 +30,6 @@ class Test2 extends ClassTest {
       boolean x = 10 - 15 * 12 < 14 + 14 * 45 ^ 34;
     }
     func doSomething(int a, float b) : string {
-      int a = 5 + 5;
       if(a < 5) {
 
       }

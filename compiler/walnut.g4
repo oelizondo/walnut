@@ -5,6 +5,7 @@ import pprint
 from engine import Engine
 from operation import Operation
 from jump_engine import JumpEngine
+from structures_engine import StructuresEngine
 }
 
 @members {
@@ -12,10 +13,13 @@ global program_engine
 global pp
 global operation
 global jump_eng
+global structures_engine
 program_engine = Engine()
 operation = Operation(program_engine)
 jump_eng = JumpEngine(program_engine)
+structures_engine = StructuresEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
+
 }
 
 program : PROGRAM_T ID_T END_OF_STM_T classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {#program_engine.print_classes()} ;
@@ -84,13 +88,17 @@ object_method : POINT_T ID_T {operation.current_function = $ID_T.text} {program_
 
 call_function : ID_T {operation.save_status()} {operation.current_function = $ID_T.text} {program_engine.register_function_era($ID_T.text)} LP_T {operation.operator_stack.append('(')} (arguments)? {operation.operator_stack.pop()} {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} {operation.function_return_save()} {operation.reset_status()} ;
 
-call_array : ID_T LB_T CTE_INT_T RB_T ;
+call_collection : ID_T {operation.identifier_stack.append($ID_T.text)} LB_T {operation.verify_dimensions()} expression {operation.generate_access_cuad(0)} RB_T ({operation.update_dimension()} call_matrix)? {operation.verify_array()} {operation.finish_collection_access()};
+
+call_matrix: LB_T {operation.verify_matrix()} expression {operation.generate_access_cuad(1)} RB_T ;
 
 declaration_assignment : ((declaration | assignments) END_OF_STM_T)+ ;
 
 declaration : (array_declaration | var_declaration | object_declaration) ;
 
-array_declaration : var_type ID_T LB_T CTE_INT_T RB_T {program_engine.register_variable($var_type.text, $ID_T.text)};
+array_declaration : var_type ID_T LB_T CTE_INT_T  {program_engine.register_variable($var_type.text, $ID_T.text, None, [], $CTE_INT_T.text)} {structures_engine.set_current_collection($ID_T.text)} {structures_engine.inject_cell($CTE_INT_T.text)} RB_T (matrix)? {structures_engine.fill_k()} ;
+
+matrix: LB_T CTE_INT_T {structures_engine.inject_cell($CTE_INT_T.text)} RB_T ;
 
 var_declaration : var_type ID_T {program_engine.register_variable($var_type.text, $ID_T.text)};
 
@@ -136,7 +144,7 @@ atomic : ID_T {operation.add_identifier($ID_T.text, None, None)}
         |constants {operation.add_identifier(None, $constants.text, None)}
         |call_object_method
         |call_function
-        |call_array;
+        |call_collection;
 
 relop_tokens : EQUAL_T
                | NOT_EQUAL_T

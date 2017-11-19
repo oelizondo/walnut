@@ -10,8 +10,8 @@ class Engine:
         self.current_object = ''
         self.jump_stack = []
 
-    def register_variable(self, var_type, identifier, value=None):
-        self.current_context.variable_directory.register(var_type, identifier, value)
+    def register_variable(self, var_type, identifier, value=None, dimension=None, finish=None):
+        self.current_context.variable_directory.register(var_type, identifier, value, dimension, finish)
 
     # This function registers in the global context the function that is being declared
     # setting its name, context and starting point as well as chaging the current context to the function's.

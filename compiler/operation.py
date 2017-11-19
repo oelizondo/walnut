@@ -1,7 +1,6 @@
 from semantic_cube import SemanticCube
 from cuadruple import Cuadruple
 import sys
-
 # % mark: refers to a constant
 
 def is_int(num):
@@ -38,12 +37,15 @@ class Operation:
         self.identifier_stack = []
         self.param_counter_stack = []
         self.function_stack = []
+        self.dimension_stack = []
         self.semantic_cube = SemanticCube()
         self.program_engine = program_engine
         self.counter = 0
         self.current_function = ''
         self.current_object = ''
         self.parameter_counter = 0
+        self.collection = None
+        self.collection_names = []
 
     def generate_cuad(self, operation, left_side=None, right_side=None, result=None):
         cuad = Cuadruple(operation, left_side, right_side, result)
@@ -62,9 +64,13 @@ class Operation:
     def add(self, variable):
         if variable != None:
             var = self.find_var(variable)
-            self.type_stack.append(str(var['type']))
-            # self.identifier_stack.append(var['value'])
-            self.identifier_stack.append(str(variable))
+            if var['dimension'] == None:
+                self.type_stack.append(str(var['type']))
+                # self.identifier_stack.append(var['value'])
+                self.identifier_stack.append(str(variable))
+            else:
+                print("Variable " + var['name'] + " is dimensioned.")
+                sys.exit()
 
     def add_constant(self, constant):
         if is_int(constant):
@@ -178,14 +184,14 @@ class Operation:
     def compare_op(self):
         if len(self.operator_stack) == 0:
             return
-        op = self.operator_stack[len(self.operator_stack) - 1]
+        op = self.operator_stack[-1]
         if op == '&&' or op == '||' or op == 'and' or op == 'or':
             op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
             type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             right_side = extract_value(self.identifier_stack.pop())
             left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
             if res_type != None:
                 temporal_id = "temp" + str(self.counter)
                 self.generate_cuad(op, left_side, right_side, temporal_id)
@@ -207,14 +213,14 @@ class Operation:
     def compare_relational_op(self):
         if len(self.operator_stack) == 0:
             return
-        op = self.operator_stack[len(self.operator_stack) - 1]
+        op = self.operator_stack[-1]
         if self.is_relational_op(op):
             op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
             type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             right_side = extract_value(self.identifier_stack.pop())
             left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
             if res_type != None:
                 temporal_id = "temp" + str(self.counter)
                 self.generate_cuad(op, left_side, right_side, temporal_id)
@@ -234,13 +240,13 @@ class Operation:
     def multiply_divide_op(self):
         if len(self.operator_stack) == 0:
             return
-        if self.operator_stack[len(self.operator_stack) - 1] == '*' or self.operator_stack[len(self.operator_stack) - 1] == '/':
+        if self.operator_stack[-1] == '*' or self.operator_stack[-1] == '/':
             op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
             type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             right_side = extract_value(self.identifier_stack.pop())
             left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
             if res_type != None:
                 temporal_id = "temp" + str(self.counter)
                 self.generate_cuad(op, left_side, right_side, temporal_id)
@@ -262,13 +268,13 @@ class Operation:
         if len(self.operator_stack) == 0:
             return
 
-        if self.operator_stack[len(self.operator_stack) - 1] == '-' or self.operator_stack[len(self.operator_stack) - 1] == '+':
+        if self.operator_stack[-1] == '-' or self.operator_stack[-1] == '+':
             op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
             type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             right_side = extract_value(self.identifier_stack.pop())
             left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
             if res_type != None:
                 temporal_id = "temp" + str(self.counter)
                 self.generate_cuad(op, left_side, right_side, temporal_id)
@@ -288,13 +294,13 @@ class Operation:
     def power_of_op(self):
         if len(self.operator_stack) == 0:
             return
-        if self.operator_stack[len(self.operator_stack) - 1] == '^':
+        if self.operator_stack[-1] == '^':
             op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
             type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             type_left_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
             right_side = extract_value(self.identifier_stack.pop())
             left_side = extract_value(self.identifier_stack.pop())
-            res_type = self.semantic_cube.semantic_cube.get((type_right_side, type_left_side, int(op)), None)
+            res_type = self.semantic_cube.semantic_cube.get((type_left_side, type_right_side, int(op)), None)
             if res_type != None:
                 temporal_id = "temp" + str(self.counter)
                 self.generate_cuad(op, left_side, right_side, temporal_id)
@@ -316,7 +322,10 @@ class Operation:
             var = self.find_var(identifier)
             to_assign_value = self.identifier_stack[len(self.identifier_stack) - 1]
             to_assign_type = self.type_stack[len(self.type_stack) - 1]
-            if var['type'] == to_assign_type:
+            to_assign_type = self.semantic_cube.converter[str(to_assign_type)]
+            to_be_assigned = self.semantic_cube.converter[str(var['type'])]
+            res_type = self.semantic_cube.semantic_cube.get((to_be_assigned, to_assign_type, 23), None)
+            if res_type != None:
                 var['value'] = to_assign_value
                 self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['name'])
             else:
@@ -377,7 +386,6 @@ class Operation:
             sys.exit()
         else:
             return obj['obj'].walnut_class.context
-        # print(self.program_engine.current_context.object_directory.current_object.walnut_class.context.function_directory.functions['initializer'])
 
     def set_current_object(self, header):
         self.current_object = header
@@ -398,6 +406,73 @@ class Operation:
             print("Conditional statement expected boolean, recieved: " + str(to_assign_type))
             sys.exit()
 
+    def verify_dimensions(self):
+        self.collection_names.append(self.identifier_stack.pop())
+        self.collection = self.find_var(str(self.collection_names[-1]))
+
+        if len(self.collection['dimension']) > 0:
+            self.dimension_stack.append([self.collection_names[-1], 1])
+            self.operator_stack.append('[')
+        else:
+            print("Error var not dimensioned")
+            sys.exit()
+
+    def generate_access_cuad(self, cell):
+        if (self.type_stack[-1] == 'int'):
+            self.generate_cuad('ver', self.identifier_stack[-1], 0, self.collection['dimension'][cell]['limit'])
+
+            if len(self.collection['dimension']) > self.dimension_stack[-1][1]:
+                aux = self.identifier_stack.pop()
+                temp = self.generate_temporal()
+                self.generate_cuad(self.semantic_cube.converter['*'], aux, '%' + str(self.collection['dimension'][cell]['k']), temp)
+                self.identifier_stack.append(temp)
+                self.type_stack.append('int')
+
+
+            if  self.dimension_stack[-1][1] > 1:
+                aux1 = self.identifier_stack.pop()
+                aux2 = self.identifier_stack.pop()
+                temp = self.generate_temporal()
+                self.generate_cuad(self.semantic_cube.converter['+'], aux1, aux2, temp)
+                self.identifier_stack.append(temp)
+                self.type_stack.append('int')
+        else:
+            print("Type error for collection access expected int got " + self.type_stack[-1])
+            sys.exit()
+
+    def update_dimension(self):
+        self.dimension_stack[-1][1] += 1
+
+    def verify_array(self):
+        dimensions = len(self.collection['dimension'])
+        if self.dimension_stack[-1][1] != dimensions:
+            print("Variable " + self.collection['name'] + " is a matrix.")
+            sys.exit()
+
+    def verify_matrix(self):
+        dimensions = len(self.collection['dimension'])
+        if  self.dimension_stack[-1][1] > dimensions:
+            print("Variable " + self.collection['name'] + " is an array.")
+            sys.exit()
+
+
+    def finish_collection_access(self):
+        aux = self.identifier_stack.pop()
+        temp = self.generate_temporal()
+        self.generate_cuad(self.semantic_cube.converter['+'], aux, 0, temp)
+        self.generate_cuad(self.semantic_cube.converter['+'], temp, self.dimension_stack[-1][0], temp)
+        self.identifier_stack.append('('+temp+')')
+        self.type_stack.append(self.collection['type'])
+        self.operator_stack.pop()
+        self.dimension_stack.pop()
+        self.collection_names.pop()
+        if len(self.collection_names) > 0:
+            self.collection = self.find_var(str(self.collection_names[-1]))
+
     def register_print(self):
         value_to_print = self.identifier_stack[len(self.type_stack) - 1]
         self.generate_cuad('puts',None,None,str(value_to_print))
+
+    def generate_temporal(self):
+        self.counter += 1
+        return "temp" + str(self.counter)
