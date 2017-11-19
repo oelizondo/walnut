@@ -17,11 +17,12 @@ global structures_engine
 program_engine = Engine()
 operation = Operation(program_engine)
 jump_eng = JumpEngine(program_engine,operation)
+structures_engine = StructuresEngine(program_engine)
 pp = pprint.PrettyPrinter(indent=2)
 
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {#program_engine.print_classes()} ;
+program : PROGRAM_T ID_T END_OF_STM_T {program_engine.insert_first_cuad()} classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {#program_engine.print_classes()} ;
 
 global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
 
@@ -70,13 +71,13 @@ write : PRINT_T LP_T write_aux RP_T END_OF_STM_T;
 write_aux: expression {operation.register_print()} COMMA_T write_aux
           | expression {operation.register_print()};
 
-loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {operation.verify_boolean()} {jump_eng.register_conditional()} RP_T LCB_T blocks* {jump_eng.fill_gotof()}RCB_T ;
+loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {operation.verify_boolean()} {jump_eng.register_conditional()} RP_T LCB_T blocks* RCB_T {jump_eng.fill_gotof()} ;
 
-conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T  LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
+conditional : IF_T if_body (ELSEIF_T else_if_body)* ELSE_T LCB_T blocks* {jump_eng.fill_gotos()} RCB_T ;
 
 if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
 
-else_if_body: LP_T expression RP_T {jump_eng.register_elseif()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
+else_if_body: LP_T expression {operation.verify_boolean()} RP_T {jump_eng.register_conditional()} LCB_T blocks* {jump_eng.register_goto()} RCB_T ;
 
 object_declaration : ID_T {program_engine.register_new_object($ID_T.text)} object_declaration_aux ;
 object_declaration_aux: ID_T {program_engine.current_context.object_directory.assign_object($ID_T.text)} {operation.set_current_object(str($ID_T.text))} ASSIGN_T {program_engine.register_method_era("initializer")} object_initialization ;
@@ -87,13 +88,13 @@ object_method : POINT_T ID_T {operation.current_function = $ID_T.text} {program_
 
 call_function : ID_T {operation.save_status()} {operation.current_function = $ID_T.text} {program_engine.register_function_era($ID_T.text)} LP_T {operation.operator_stack.append('(')} (arguments)? {operation.operator_stack.pop()} {operation.argument_number_validation()} RP_T {operation.function_call($ID_T.text)} {operation.function_return_save()} {operation.reset_status()} ;
 
-call_collection : ID_T {operation.identifier_stack.append($ID_T.text)} LB_T {operation.verify_dimensions()} expression {operation.generate_access_cuad(0)} RB_T ({operation.update_dimension()} call_matrix)? {operation.verify_array()} {operation.finish_collection_access()};
+call_collection : ID_T {operation.add_identifier(None,None,$ID_T.text)} LB_T {operation.verify_dimensions($ID_T.text)} expression {operation.generate_access_cuad(0)} RB_T ({operation.update_dimension()} call_matrix)? {operation.verify_array()} {operation.finish_collection_access()};
 
 call_matrix: LB_T {operation.verify_matrix()} expression {operation.generate_access_cuad(1)} RB_T ;
 
 declaration_assignment : ((declaration | assignments) END_OF_STM_T)+ ;
 
-declaration : (array_declaration | var_declaration | object_declaration) ;
+declaration : (array_declaration {structures_engine.set_next_memory_avail()}| var_declaration | object_declaration) ;
 
 array_declaration : var_type ID_T LB_T CTE_INT_T  {program_engine.register_variable($var_type.text, $ID_T.text, None, [], $CTE_INT_T.text)} {structures_engine.set_current_collection($ID_T.text)} {structures_engine.inject_cell($CTE_INT_T.text)} RB_T (matrix)? {structures_engine.fill_k()} ;
 

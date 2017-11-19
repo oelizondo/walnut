@@ -51,11 +51,13 @@ class Operation:
         cuad = Cuadruple(operation, left_side, right_side, result)
         self.program_engine.send_cuad(cuad)
 
-    def add_identifier(self, identifier, constant, function):
+    def add_identifier(self, identifier, constant, array):
         if identifier != None:
             self.add(identifier)
         elif constant != None:
             self.add_constant(constant)
+        elif array != None:
+            self.add_array(array)
         # elif obj != None:
         #     self.add_constant(obj)
         #  else:
@@ -90,6 +92,15 @@ class Operation:
         else:
             print("Type Error could not add constant " + constant)
             sys.exit()
+
+    def add_array(self,array):
+        if array != None:
+            arr = self.find_var(array)
+            if arr['dimension'] == None:
+                # self.type_stack.append(str(arr['type']))
+                # self.identifier_stack.append(arr['vm_direction'])
+            # else:
+                print("Variable "+ arr['name'] +" is not dimensioned.")
 
     # This function checks that the function called exists and sets the function "variable" in the identifier/type stack
     def function_call(self, header):
@@ -241,7 +252,7 @@ class Operation:
                 if to_assign_type == 'void':
                     print("value is from a void function")
                 else:
-                    print("incompatible types: " + str(to_assign_type) + " and " + str(var['type']))
+                    print("incompatible types: " + self.semantic_cube.inverter[to_assign_type] + " and " + str(var['type']))
                 sys.exit()
 
     def operation_semantic_validation(self):
@@ -335,9 +346,9 @@ class Operation:
             print("Conditional statement expected boolean, recieved: " + str(to_assign_type))
             sys.exit()
 
-    def verify_dimensions(self):
-        self.collection_names.append(self.identifier_stack.pop())
-        self.collection = self.find_var(str(self.collection_names[-1]))
+    def verify_dimensions(self, identifier):
+        self.collection_names.append(identifier)
+        self.collection = self.find_var(self.collection_names[-1])
 
         if len(self.collection['dimension']) > 0:
             self.dimension_stack.append([self.collection_names[-1], 1])
@@ -352,18 +363,21 @@ class Operation:
 
             if len(self.collection['dimension']) > self.dimension_stack[-1][1]:
                 aux = self.identifier_stack.pop()
+                self.type_stack.pop()
                 temp = self.generate_temporal('int')
                 self.generate_cuad(self.semantic_cube.converter['*'], aux, '%' + str(self.collection['dimension'][cell]['k']), temp['vm_direction'])
-                self.identifier_stack.append(temp)
+                self.identifier_stack.append(temp['vm_direction'])
                 self.type_stack.append('int')
 
 
             if  self.dimension_stack[-1][1] > 1:
                 aux1 = self.identifier_stack.pop()
+                self.type_stack.pop()
                 aux2 = self.identifier_stack.pop()
+                self.type_stack.pop()
                 temp = self.generate_temporal('int')
                 self.generate_cuad(self.semantic_cube.converter['+'], aux1, aux2, temp['vm_direction'])
-                self.identifier_stack.append(temp)
+                self.identifier_stack.append(temp['vm_direction'])
                 self.type_stack.append('int')
         else:
             print("Type error for collection access expected int got " + self.type_stack[-1])
@@ -387,10 +401,12 @@ class Operation:
 
     def finish_collection_access(self):
         aux = self.identifier_stack.pop()
+        self.type_stack.pop()
         temp = self.generate_temporal(self.collection['type'])
-        self.generate_cuad(self.semantic_cube.converter['+'], aux, 0, temp)
-        self.generate_cuad(self.semantic_cube.converter['+'], temp['vm_direction'], self.dimension_stack[-1][0], temp['vm_direction'])
-        self.identifier_stack.append('('+temp['vm_direction']+')')
+        base = self.find_var(self.dimension_stack[-1][0])
+        self.generate_cuad(self.semantic_cube.converter['+'], aux, 0, temp['vm_direction'])
+        self.generate_cuad(self.semantic_cube.converter['+'], temp['vm_direction'], base['vm_direction'], temp['vm_direction'])
+        self.identifier_stack.append('('+str(temp['vm_direction'])+')')
         self.type_stack.append(self.collection['type'])
         self.operator_stack.pop()
         self.dimension_stack.pop()

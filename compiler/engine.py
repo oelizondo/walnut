@@ -55,9 +55,11 @@ class Engine:
         child_context = Context('main', self.current_context)
         self.context.function_directory.register('main', child_context, len(self.cuadruples)+1)
         self.current_context = child_context
+        self.cuadruples[0].result = len(self.cuadruples)
 
-        cuad = Cuadruple('goto',None, None, len(self.cuadruples)+1)
-        self.cuadruples.insert(0,cuad)
+    def insert_first_cuad(self):
+        cuad = Cuadruple('goto',None, None, None)
+        self.cuadruples.append(cuad)
 
     # This function registers the cuadruple for the end of a function.
     def register_end_proc(self):

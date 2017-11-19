@@ -1,6 +1,19 @@
 program operation;
 
 run
-  int a = 0;
-  a > 5;
+  if(true){
+  puts(4);
+  puts(4);
+  puts(4);
+  puts(4);
+  puts(4);
+  puts(4);
+  puts(4);
+  }
+  elseif(3>4){
+  puts(6);
+  }
+  else{
+  puts(5);
+  }
 end

@@ -20,11 +20,12 @@ class JumpEngine:
         self.program_engine.cuadruples[last_gotof].result = len(cuads)
         self.goto_stack.append(len(cuads) - 1)
 
-    def register_elseif(self):
+    def fill_gotos(self):
         cuads = self.program_engine.cuadruples
-        cuad = Cuadruple('GOTOF', self.operation_system.identifier_stack.pop(), None, None)
-        self.program_engine.send_cuad(cuad)
-        self.program_engine.jump_stack.append(len(cuads) - 1)
+        while len(self.goto_stack):
+            goto = self.goto_stack.pop()
+            cuad = cuads[goto]
+            cuad.result = len(cuads)
 
     def fill_gotof(self):
         cuads = self.program_engine.cuadruples
@@ -34,13 +35,6 @@ class JumpEngine:
         while_start = self.program_engine.jump_stack.pop()
         cuad = Cuadruple('GOTO', None, None, while_start)
         self.program_engine.send_cuad(cuad)
-
-    def fill_gotos(self):
-        cuads = self.program_engine.cuadruples
-        while len(self.goto_stack):
-            goto = self.goto_stack.pop()
-            cuad = cuads[goto]
-            cuad.result = len(cuads)
 
     def insert_jump(self):
         cuads = self.program_engine.cuadruples

@@ -18,15 +18,16 @@ class StructuresEngine:
         }
 
     def update_r(self):
-        self.R = self.R * (int(self.current_collection['finish']) + 1)
+        self.R = self.R * (self.current_collection['dimension'][-1]['limit'] + 1)
+
 
     def fill_k(self):
         if len(self.current_collection['dimension']) == 1:
             self.current_collection['dimension'][0]['k'] = 0
         else:
-            dimensions = self.current_collection['dimension']
-            for dim in dimensions:
-                dim['k'] = self.R / int(dim['limit'])
+            self.current_collection['dimension'][0]['k'] = self.R / int(self.current_collection['dimension'][0]['limit'] + 1)
+            self.current_collection['dimension'][-1]['k'] = 0
 
-            dimensions[-1]['k'] = 0
-            self.R = 1
+    def set_next_memory_avail(self):
+        self.program_engine.memory_direction += self.R
+        self.R = 1
