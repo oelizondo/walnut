@@ -210,8 +210,9 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
                 print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
+                sys.exit()
 
     def is_relational_op(self, op):
         return op == '<' or op == '>' or op =='>=' or op == '<=' or op == '==' or op == 'is' or op == '!=' or op == 'not'
@@ -239,7 +240,7 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
                 print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
@@ -266,7 +267,7 @@ class Operation:
                 #     res = left_side / right_side
 
             else:
-                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
                 print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
@@ -293,7 +294,7 @@ class Operation:
                 # else:
                 #     res = left_side - right_side
             else:
-                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
                 print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
@@ -319,7 +320,7 @@ class Operation:
                 # else:
                 #     res = left_side / right_side
             else:
-                print("Type Error cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values " + str(right_side) + " and " + str(left_side))
+                print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
                 print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
                 sys.exit()
 
