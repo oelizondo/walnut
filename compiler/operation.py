@@ -135,7 +135,7 @@ class Operation:
         func = self.find_function(self.current_function, self.program_engine.current_context)
         function_parameters = func.get('parameters')
         if self.parameter_counter == len(function_parameters):
-            self.parameter_counter = 0
+            self.reset_parameter_counter()
         else:
             print("Argument error in "+ str(self.current_function) +" function call, expected " + str(len(function_parameters)) + " argument(s)")
             sys.exit()
@@ -163,7 +163,7 @@ class Operation:
         func = self.find_obj_function(self.current_function, obj_context)
         function_parameters = func.get('parameters')
         if self.parameter_counter == len(function_parameters):
-            self.parameter_counter = 0
+            self.reset_parameter_counter()
         else:
             print("Argument error in object "+ str(self.current_function) +" function call, expected " + str(len(function_parameters)) + " argument(s)")
             sys.exit()
@@ -180,6 +180,12 @@ class Operation:
             self.generate_cuad('gosub',None,None, str(function_recieved.get("starting_point")))
         else:
             print("function" + str(header) + "does not exist")
+
+    def register_parameter(self,var_type,header):
+        self.program_engine.current_context.function_directory.register_parameter(var_type, header)
+        var = self.find_var(header)
+        self.generate_cuad(23,'param'+ str(self.parameter_counter+1), None, var['name'])
+        self.parameter_counter += 1
 
     def compare_op(self):
         if len(self.operator_stack) == 0:
@@ -391,6 +397,9 @@ class Operation:
         self.current_object = header
         self.program_engine.current_object = header
 
+    def reset_parameter_counter(self):
+        self.parameter_counter = 0
+
     def reset_status(self):
         self.parameter_counter = self.param_counter_stack.pop()
         self.current_function = self.function_stack.pop()
@@ -398,7 +407,7 @@ class Operation:
     def save_status(self):
         self.param_counter_stack.append(self.parameter_counter)
         self.function_stack.append(self.current_function)
-        self.parameter_counter = 0
+        self.reset_parameter_counter()
 
     def verify_boolean(self):
         to_assign_type = self.type_stack[len(self.type_stack) - 1]

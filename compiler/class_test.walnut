@@ -53,9 +53,9 @@ globals {
   as = obj.somethingElse(as,3);
 }
 
-func doThis(int param1, string param2, float param3) : int {
+func doThis(int p1, string p2, float p3) : int {
   float a;
-  a = param1 + param3;
+  a = p1 + p3;
 
   return obj.somethingElse(1,2);
 }
@@ -71,5 +71,6 @@ func func3(int param2) {
 run
   string c;
   c = func2(1,2,3) + func2(2,2,3) + func2(2,3,3);
+  obj.doSomething(1,5/3);
   c = obj.parent_function("a","b") + obj2.parent_function("b","3") + obj.doSomething(doThis(1,"string",5/3),5*3/12);
 end
