@@ -1,19 +1,47 @@
 program operation;
 
+func hola() {
+  puts("hola");
+}
+
+func retInt(int a, int b) : int {
+  int c = a + b;
+  return c;
+}
+
+func factorial(int n) : int {
+  if (n == 1) {
+    n = 1;
+  } else {
+    n = n * factorial(n - 1);
+  }
+  return n;
+}
+
+func fibo_aux(int a, int b, int c, int lim) : int {
+  if (lim == 0) {
+  } else {
+    c = fibo_aux(b, c, c+b, lim - 1);
+  }
+
+  return c;
+}
+
+func fibo(int n) : int {
+  if (n <= 2) {
+    n = 1;
+  } else {
+    n = fibo(n-1) + fibo(n-2);
+  }
+  return n;
+}
+
+func fibonacci(int n) : int {
+  return fibo_aux(1, 1, 1+1, n);
+}
+
 run
-  if(true){
-  puts(4);
-  puts(4);
-  puts(4);
-  puts(4);
-  puts(4);
-  puts(4);
-  puts(4);
-  }
-  elseif(3>4){
-  puts(6);
-  }
-  else{
-  puts(5);
-  }
+  int fib;
+  fib = fibonacci(5000);
+  puts(fib);
 end

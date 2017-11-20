@@ -19,7 +19,7 @@ class Engine:
     # setting its name, context and starting point as well as chaging the current context to the function's.
     def register_function(self, header):
         child_context = Context(header, self.current_context)
-        self.current_context.function_directory.register(header, child_context, len(self.cuadruples)+1)
+        self.current_context.function_directory.register(header, child_context, len(self.cuadruples))
         self.current_context = child_context
 
     # This function registers the class under the current context, thus giving the oportunity to create a class under
@@ -58,7 +58,7 @@ class Engine:
         self.cuadruples[0].result = len(self.cuadruples)
 
     def insert_first_cuad(self):
-        cuad = Cuadruple('goto',None, None, None)
+        cuad = Cuadruple('GOTO',None, None, None)
         self.cuadruples.append(cuad)
 
     # This function registers the cuadruple for the end of a function.
@@ -107,8 +107,14 @@ class Engine:
             print(count, cuad.operation, cuad.left_side, cuad.right_side, cuad.result)
             count += 1
 
-    # def print_main(self):
-    #     print("-")
+    def write_quads(self):
+        with open('walnut.obj', 'wb') as f:
+            for cuad in self.cuadruples:
+                f.write(str(cuad.operation) + ',')
+                f.write(str(cuad.left_side) + ',')
+                f.write(str(cuad.right_side) + ',')
+                f.write(str(cuad.result))
+                f.write('\n')
 
     def print_classes(self):
         for key, value in self.context.class_directory.classes.iteritems():
