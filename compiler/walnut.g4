@@ -24,7 +24,7 @@ pp = pprint.PrettyPrinter(indent=2)
 
 program : PROGRAM_T ID_T END_OF_STM_T {program_engine.insert_first_cuad()} classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.print_quads()} {program_engine.write_quads()} {#program_engine.print_classes()} ;
 
-global_variables : GLOBALS_T LCB_T declaration_assignment RCB_T ;
+global_variables : GLOBALS_T LCB_T {program_engine.set_global_environment()} declaration_assignment RCB_T {program_engine.remove_global_enviroment()};
 
 classes : CLASS_T ID_T {program_engine.register_class($ID_T.text)} extends {program_engine.reset_context()}
          | CLASS_T ID_T {program_engine.register_class($ID_T.text)} LCB_T class_body RCB_T  {program_engine.reset_context()};
@@ -37,7 +37,7 @@ class_attributes : ATTRS_T LCB_T (declaration END_OF_STM_T)* RCB_T ;
 
 class_methods : METHODS_T LCB_T initializer {program_engine.register_end_proc()} (method_declaration {program_engine.register_end_proc()})* RCB_T ;
 
-initializer : FUNC_T INIT_T {program_engine.register_function($INIT_T.text)} LP_T parameters? RP_T LCB_T blocks* RCB_T {program_engine.reset_context()} ;
+initializer : FUNC_T INIT_T {program_engine.register_function($INIT_T.text)} LP_T parameters? {operation.reset_parameter_counter()} RP_T LCB_T blocks* RCB_T {program_engine.reset_context()} ;
 
 method_declaration : FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T {operation.reset_parameter_counter()} RETURN_TYPE_T var_type {program_engine.register_function_return_type($ID_T.text, $var_type.text)} function_body {program_engine.register_return($ID_T.text,operation.identifier_stack[-1],operation.type_stack[-1])} {program_engine.reset_context()}
                     | FUNC_T ID_T {program_engine.register_function($ID_T.text)} LP_T parameters? RP_T {operation.reset_parameter_counter()} function_body_no_return {program_engine.reset_context()};

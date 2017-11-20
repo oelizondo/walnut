@@ -1,34 +1,21 @@
 program test;
 
-globals {
-  int as = 1002;
+globals{
+  float c = 0;
 }
 
-func function1(int a, int b) : int {
-  return a;
+func square(int a) : int {
+  c = c + 1;
+  return a^2;
 }
 
+func cube(int a) : int {
+  c = c + 1;
+  return a^3;
+}
 run
-  int a;
-  int b;
-  b = 1;
-  if( a < b) {
-  
-  }
-  elseif(45 < 5 and 5*7 > 5){
-  }
-  elseif(6 > 6){
-  }
-  elseif(true){
-
-  }
-  else{
-  }
-
-  if(true){
-
-  }
-  else{
-
-  }
+  cube(square(cube(square(cube(3)))));
+  puts(c);
+  c = cube(square(cube(square(cube(3)))));
+  puts(c);
 end

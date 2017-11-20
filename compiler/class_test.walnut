@@ -2,19 +2,29 @@ program test;
 
 class ClassTest {
   attributes {
-    string parent;
+    string personal_string;
+    int different;
   }
 
   methods {
-    func initializer(int a, int b, int c) {
-      int z;
+    func initializer(int a, int b, string c) {
+      different = a + b;
+      personal_string = c;
     }
     func doSomething() {
       int cosa = 12434;
     }
 
-    func parent_function(string a, string c) : string {
-      return parent;
+    func return_personal_string() : string {
+      return personal_string;
+    }
+
+    func return_different() : int {
+      return different;
+    }
+
+    func set_personal_string(string a) {
+      personal_string = a;
     }
   }
 }
@@ -47,8 +57,9 @@ class Test2 extends ClassTest {
 globals {
   int as = 1002;
   Test2 obj = Test2.new(3,2.2);
-  ClassTest obj2 = ClassTest.new(1,2,3);
   as = obj.somethingElse(as,3);
+  ClassTest obj2 = ClassTest.new(1,2,"this is object 2");
+  ClassTest obj3 = ClassTest.new(3,4,"this is object 3");
 }
 
 func doThis(int p1, string p2, float p3) : int {
@@ -67,8 +78,12 @@ func func3(int param2) {
 }
 
 run
-  string c;
-  c = func2(1,2,3) + func2(2,2,3) + func2(2,3,3);
-  obj.doSomething(1,5/3);
-  c = obj.parent_function("a","b") + obj2.parent_function("b","3") + obj.doSomething(doThis(1,"string",5/3),5*3/12);
+  puts(obj2.return_personal_string(),obj3.return_personal_string());
+  puts(obj2.return_different(),obj3.return_different());
+
+  obj2.set_personal_string("this is another string obj2");
+  obj3.set_personal_string("for my new object obj3");
+
+  puts(obj2.return_personal_string(),obj3.return_personal_string());
+  puts(as);
 end

@@ -10,6 +10,7 @@ class Engine:
         self.current_object = ''
         self.jump_stack = []
         self.memory_direction = 1000
+        self.global_goto = 0
 
     def register_variable(self, var_type, identifier, value=None, dimension=None, finish=None):
         vm_direction = self.get_next_virtual_memory()
@@ -55,7 +56,10 @@ class Engine:
         child_context = Context('main', self.current_context)
         self.context.function_directory.register('main', child_context, len(self.cuadruples)+1)
         self.current_context = child_context
-        self.cuadruples[0].result = len(self.cuadruples)
+        if(self.cuadruples[0].result == None):
+            self.cuadruples[0].result = len(self.cuadruples)
+        else:
+            self.cuadruples[self.global_goto].result = len(self.cuadruples)
 
     def insert_first_cuad(self):
         cuad = Cuadruple('GOTO',None, None, None)
@@ -88,6 +92,16 @@ class Engine:
     def reset_context(self):
         # print(str(self.current_context.context) + " -> father -> " + str(self.current_context.parent.context))
         self.current_context = self.current_context.parent
+
+    def set_global_environment(self):
+        self.memory_direction += 100000
+        self.cuadruples[0].result = len(self.cuadruples)
+
+    def remove_global_enviroment(self):
+        self.memory_direction -= 100000
+        cuad = Cuadruple('GOTO',None,None,None)
+        self.global_goto = len(self.cuadruples)
+        self.cuadruples.append(cuad)
 
     # This function is a helper that resets to global context
     def reset_to_global(self):

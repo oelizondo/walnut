@@ -1,16 +1,8 @@
 program fibonacci;
-
-func fibonacci(int fibo) : int {
-  if(fibo <= 2){
-    fibo = 1;
-  }
-  else{
-    fibo = fibonacci(fibo-2) + fibonacci(fibo-1);
-  }
-  puts(fibo);
-  return fibo;
+globals{
+int a = 6;
+float b = 6.6;
 }
-
 run
-  fibonacci(3);
+  a + b;
 end

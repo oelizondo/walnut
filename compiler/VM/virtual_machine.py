@@ -17,6 +17,7 @@ class VirtualMachine:
         self.context_stack = []
         self.current_context = {}
         self.new_context = {}
+        self.global_context = {}
         self.function_stack = []
         self.pointer_stack = []
         self.objects = {}
@@ -61,13 +62,20 @@ class VirtualMachine:
         except ValueError:
             return False
 
+    def get_id_context(self,value):
+        if(self.is_int(value) and int(value) >= 100000):
+            return self.global_context
+        else:
+            return self.current_context
+
     def parse_side(self,value):
         if(value[0] == "%"):
             return self.clean_argument(value)
         elif value[0] == '(':
             return self.current_context[self.current_context[value[1:-1]]]
         else:
-            _id = self.current_context.get(value, None)
+            context = self.get_id_context(value)
+            _id = context.get(value, None)
             if _id == None:
                 print("Operation with unassigned identifier. " + str(self.cuadruple_pointer))
                 sys.exit()
@@ -81,70 +89,84 @@ class VirtualMachine:
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left == right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '11':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left != right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '12':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left and right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '13':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left or right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '14':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left <= right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '15':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left >= right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '16':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left < right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '17':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left > right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '18':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = Decimal(left) / Decimal(right)
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '19':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left ** right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '20':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left * right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '21':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left + right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '22':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left - right
-                self.current_context[next_process.result] = res
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = res
             elif next_process.operation == '23':
                 left = self.parse_side(next_process.left_side)
-                self.current_context[next_process.result] = left
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = left
             # elif next_process.operation == 24:
             # elif next_process.operation == 'ver':
             elif next_process.operation == 'GOTO':
@@ -155,25 +177,28 @@ class VirtualMachine:
                     self.cuadruple_pointer = int(next_process.result) - 1
             elif next_process.operation == 'return':
                 prev_context = self.context_stack[-1]
-                prev_context[self.function_stack.pop()] = self.parse_side(next_process.result)
+                prev_context[self.function_stack[-1]] = self.parse_side(next_process.result)
             elif next_process.operation == 'era':
-                # object_name = next_process.left_side
-                # if object_name != None:
-                #     _object = self.objects.get(object_name, None)
-                #     if _object == None:
-                #         self.objects[object_name] = {}
-                #     self.context_stack.append(self.current_context)
-                #     self.current_context = self.objects[object_name]
-                # else:
+                object_name = next_process.left_side
                 self.context_stack.append(self.current_context)
                 self.function_stack.append(next_process.result)
-                self.new_context = {}
+                if object_name != 'None':
+                    _object = self.objects.get(object_name, None)
+                    if _object == None:
+                        self.objects[object_name] = {}
+                        _object = self.objects[object_name]
+                    self.new_context = _object
+                else:
+                    self.new_context = {}
 
                 # self.context_stack.append([function_name, self.cuadruple_pointer, ])
             elif next_process.operation == 'param':
                 self.new_context[next_process.result] = self.parse_side(next_process.left_side)
             elif next_process.operation == 'endproc':
                 prev_context = self.context_stack.pop()
+                func = self.function_stack.pop()
+                if(prev_context.get(func,None) == None):
+                    prev_context[func] = -1
                 self.current_context = prev_context
                 self.cuadruple_pointer = self.pointer_stack.pop()
             elif next_process.operation == 'gosub':
