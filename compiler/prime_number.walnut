@@ -1,0 +1,19 @@
+program prime_number;
+
+func prime_number(int num) : boolean {
+  int i = 2;
+  boolean flag = true;
+  while(i < num && flag){
+    if(0 == num-(num/i)*i){
+      flag = false;
+    }
+    else{
+      i = i + 1;
+    }
+  }
+  return flag;
+}
+
+run
+  puts(prime_number(8), prime_number(17), prime_number(173), prime_number(7901), prime_number(7903));
+end

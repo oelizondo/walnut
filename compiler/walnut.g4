@@ -108,9 +108,9 @@ matrix: LB_T CTE_INT_T {structures_engine.inject_cell($CTE_INT_T.text)} RB_T ;
 
 var_declaration : var_type ID_T {program_engine.register_variable($var_type.text, $ID_T.text)};
 
-assignments : (array_assignment | var_assignment) ;
+assignments : (collection_assignment | var_assignment) ;
 
-array_assignment : (var_type)? ID_T LB_T CTE_INT_T RB_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, $expression.text)};
+collection_assignment : call_collection ASSIGN_T expression {operation.collection_assignment()};
 
 var_assignment : var_type ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)}
                 | ID_T ASSIGN_T expression {operation.assign_operation($ID_T.text)};

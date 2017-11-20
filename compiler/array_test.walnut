@@ -1,18 +1,24 @@
-program
-test
-;
+program test;
 
 globals
  {
   int a[10][10];
   int b[5];
-  string c[5];
+  int c[5];
 }
 
-func retFloat(int a) : float {
-  return a/5;
-}
 
 run
-  b[a[0][0]] + a[0][0];
+  int a[10][10];
+  c[0] = 5;
+  c[1] = 10;
+  c[1*2] = 15;
+  c[3] = 20;
+  c[4] = 25;
+  int cont = 0;
+  while(cont < 5){
+    puts(c[cont]);
+    cont = cont +1;
+  }
+
 end

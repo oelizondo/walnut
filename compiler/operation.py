@@ -255,6 +255,7 @@ class Operation:
                     print("incompatible types: " + self.semantic_cube.inverter[to_assign_type] + " and " + str(var['type']))
                 sys.exit()
 
+
     def operation_semantic_validation(self):
         op = self.semantic_cube.converter.get(self.operator_stack.pop(), None)
         type_right_side = self.semantic_cube.converter.get(self.type_stack.pop(), None)
@@ -271,6 +272,27 @@ class Operation:
         else:
             print("Type Error, cannot \"" + str(self.semantic_cube.inverter[op]) + "\" values")
             print("incompatible types: " + str(self.semantic_cube.inverter[type_right_side]) + " and " + str(self.semantic_cube.inverter[type_left_side]))
+            sys.exit()
+
+    def collection_assignment(self):
+        expression = self.identifier_stack.pop()
+        collection_direction = self.identifier_stack.pop()
+
+        expression_type = self.type_stack.pop()
+        collection_type = self.type_stack.pop()
+
+        to_assign_type = self.semantic_cube.converter[str(expression_type)]
+        to_be_assigned = self.semantic_cube.converter[str(collection_type)]
+        res_type = self.semantic_cube.semantic_cube.get((to_be_assigned, to_assign_type, 23), None)
+        
+        if res_type == to_be_assigned:
+            self.generate_cuad(self.semantic_cube.converter['='], expression, None, collection_direction)
+        else:
+            print("Type Error: cannot assign the value to dimensioned variable")
+            if to_assign_type == 'void':
+                print("value is from a void function")
+            else:
+                print("incompatible types: " + self.semantic_cube.inverter[to_assign_type] + " and " + self.semantic_cube.inverter[to_be_assigned])
             sys.exit()
 
     def find_var(self, variable):
@@ -359,7 +381,7 @@ class Operation:
 
     def generate_access_cuad(self, cell):
         if (self.type_stack[-1] == 'int'):
-            self.generate_cuad('ver', self.identifier_stack[-1], 0, self.collection['dimension'][cell]['limit'])
+            self.generate_cuad('ver', self.identifier_stack[-1], '%' + str(0), '%' + str(self.collection['dimension'][cell]['limit']))
 
             if len(self.collection['dimension']) > self.dimension_stack[-1][1]:
                 aux = self.identifier_stack.pop()
@@ -404,8 +426,8 @@ class Operation:
         self.type_stack.pop()
         temp = self.generate_temporal(self.collection['type'])
         base = self.find_var(self.dimension_stack[-1][0])
-        self.generate_cuad(self.semantic_cube.converter['+'], aux, 0, temp['vm_direction'])
-        self.generate_cuad(self.semantic_cube.converter['+'], temp['vm_direction'], base['vm_direction'], temp['vm_direction'])
+        self.generate_cuad(self.semantic_cube.converter['+'], aux, '%' + str(0), temp['vm_direction'])
+        self.generate_cuad(self.semantic_cube.converter['+'], temp['vm_direction'],'%' + str(base['vm_direction']), temp['vm_direction'])
         self.identifier_stack.append('('+str(temp['vm_direction'])+')')
         self.type_stack.append(self.collection['type'])
         self.operator_stack.pop()

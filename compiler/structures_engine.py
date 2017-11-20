@@ -8,6 +8,9 @@ class StructuresEngine:
         self.current_collection = self.program_engine.current_context.variable_directory.variables.get(identifier)
 
     def inject_cell(self, limit):
+        if(limit != None and int(limit) <= 0):
+            print("Out of bounds, cannot declare an array with: " + limit + ", value must be bigger than 0")
+            sys.exit()
         self.current_collection['dimension'].append(self.generate_cell(int(limit)))
         self.update_r()
 

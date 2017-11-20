@@ -63,16 +63,27 @@ class VirtualMachine:
             return False
 
     def get_id_context(self,value):
+        if(value[0] == '('):
+            value = value[1:-1]
+
         if(self.is_int(value) and int(value) >= 100000):
             return self.global_context
         else:
             return self.current_context
 
+    def get_division(self,left,right):
+        if(self.is_int(left) and self.is_int(right)):
+            return left // right
+        else:
+            return Decimal(left) / Decimal(right)
     def parse_side(self,value):
         if(value[0] == "%"):
             return self.clean_argument(value)
         elif value[0] == '(':
-            return self.current_context[self.current_context[value[1:-1]]]
+            value = value[1:-1]
+            context = self.get_id_context(value)
+            vm_direction = context[value]
+            return context[vm_direction]
         else:
             context = self.get_id_context(value)
             _id = context.get(value, None)
@@ -81,6 +92,14 @@ class VirtualMachine:
                 sys.exit()
             else:
                 return _id
+
+    def parse_result(self,value):
+        context = self.get_id_context(value)
+        if value[0] == '(':
+            value = value[1:-1]
+            return context[value]
+        else:
+            return value
 
     def start_program(self):
         while self.cuadruple_pointer < self.file_size:
@@ -136,7 +155,7 @@ class VirtualMachine:
             elif next_process.operation == '18':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
-                res = Decimal(left) / Decimal(right)
+                res = self.get_division(left,right)
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
             elif next_process.operation == '19':
@@ -166,9 +185,18 @@ class VirtualMachine:
             elif next_process.operation == '23':
                 left = self.parse_side(next_process.left_side)
                 context = self.get_id_context(next_process.result)
-                context[next_process.result] = left
+                result = self.parse_result(next_process.result)
+                context[result] = left
             # elif next_process.operation == 24:
-            # elif next_process.operation == 'ver':
+            elif next_process.operation == 'ver':
+                number_to_check = self.parse_side(next_process.left_side)
+                lower_limit = self.parse_side(next_process.right_side)
+                upper_limit = self.parse_side(next_process.result)
+
+                if(number_to_check < lower_limit or number_to_check > upper_limit):
+                    print("Access to the dimensioned variable is out of bounds,")
+                    print("The number: " + str(number_to_check) + " expected to be between: "+str(lower_limit)+" and "+str(upper_limit))
+                    sys.exit()
             elif next_process.operation == 'GOTO':
                 self.cuadruple_pointer = int(next_process.result) - 1
             elif next_process.operation == 'GOTOF':

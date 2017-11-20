@@ -42,7 +42,7 @@ class SemanticCube:
                 sem[(counter,counter,i)] = 2
                 if counter == 0:
                     sem[(1,counter,i)] = 2
-                elif counter == 2:
+                elif counter == 1:
                     sem[(0,counter,i)] = 2
         # assing operations
             sem[(counter,counter,23)] = counter

@@ -14,6 +14,9 @@ class Engine:
 
     def register_variable(self, var_type, identifier, value=None, dimension=None, finish=None):
         vm_direction = self.get_next_virtual_memory()
+        if(finish != None and int(finish) <= 0):
+            print("Out of bounds, cannot declare an array with: " + finish + ", value must be bigger than 0")
+            sys.exit()
         self.current_context.variable_directory.register(var_type, identifier, value, vm_direction, dimension, finish)
 
     # This function registers in the global context the function that is being declared
