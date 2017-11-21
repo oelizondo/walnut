@@ -43,7 +43,7 @@ func fibonacci(int n) : int {
 run
   int fib;
   fib = fibonacci(15);
-  puts(fib);
-  fib = fibo(15);
+  read("Insert the limit of fibonacci number: ", fib);
+  fib = fibo(fib);
   puts(fib);
 end
