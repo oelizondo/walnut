@@ -1,3 +1,4 @@
+# Cuadruple module: the cuadruple factory.
 class Cuadruple:
     def __init__(self, operation, left_side, right_side, result):
         self.operation = operation
