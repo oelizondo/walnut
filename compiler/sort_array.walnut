@@ -1,0 +1,53 @@
+program sort_array;
+
+globals{
+  int array[10];
+  int cont = 0;
+}
+
+func print_array(){
+  while(cont < 10){
+    puts(array[cont]);
+    cont = cont + 1;
+  }
+}
+
+func sort(){
+  int top = 9;
+  int aux = 0;
+  int biggest = 0;
+  int position_aux = 0;
+
+  while(top >= 1){
+    aux = 0;
+    biggest = 0;
+
+    while(aux <= top){
+      if(array[aux] > biggest){
+        biggest = array[aux];
+        position_aux = aux;
+      }
+      else{
+
+      }
+      aux = aux + 1;
+    }
+    aux = array[top];
+    array[top] = biggest;
+    array[position_aux] = aux;
+    top = top - 1;
+  }
+}
+
+run
+  int filler = 10;
+  while(cont < 10){
+    array[cont] = filler;
+    filler = filler - 1;
+    cont = cont + 1;
+  }
+
+  cont = 0;
+  sort();
+  print_array();
+end

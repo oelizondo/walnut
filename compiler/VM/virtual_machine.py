@@ -65,7 +65,11 @@ class VirtualMachine:
     def get_id_context(self,value):
         if(value[0] == '('):
             value = value[1:-1]
-
+            vm_direction = self.current_context[value]
+            if(int(vm_direction) >= 100000):
+                return self.global_context
+            else:
+                return self.current_context
         if(self.is_int(value) and int(value) >= 100000):
             return self.global_context
         else:
@@ -81,9 +85,10 @@ class VirtualMachine:
             return self.clean_argument(value)
         elif value[0] == '(':
             value = value[1:-1]
-            context = self.get_id_context(value)
-            vm_direction = context[value]
-            return context[vm_direction]
+            vm_direction = self.current_context[value]
+            if(vm_direction >= 100000):
+                return self.global_context[vm_direction]
+            return self.current_context[vm_direction]
         else:
             context = self.get_id_context(value)
             _id = context.get(value, None)
@@ -97,7 +102,7 @@ class VirtualMachine:
         context = self.get_id_context(value)
         if value[0] == '(':
             value = value[1:-1]
-            return context[value]
+            return self.current_context[value]
         else:
             return value
 
@@ -184,8 +189,8 @@ class VirtualMachine:
                 context[next_process.result] = res
             elif next_process.operation == '23':
                 left = self.parse_side(next_process.left_side)
-                context = self.get_id_context(next_process.result)
                 result = self.parse_result(next_process.result)
+                context = self.get_id_context(next_process.result)
                 context[result] = left
             # elif next_process.operation == 24:
             elif next_process.operation == 'ver':
