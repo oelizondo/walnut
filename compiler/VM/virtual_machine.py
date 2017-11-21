@@ -11,18 +11,19 @@ class Cuadruple:
 
 class VirtualMachine:
     def __init__(self, file):
-        self.file = file
-        self.cuadruples = []
-        self.cuadruple_pointer = 0
-        self.context_stack = []
-        self.current_context = {}
-        self.new_context = {}
-        self.global_context = {}
-        self.function_stack = []
-        self.pointer_stack = []
-        self.objects = {}
-        self.file_size = 0
+        self.file = file            # walnut.obj
+        self.cuadruples = []        # cuadruples container
+        self.cuadruple_pointer = 0  # pointer that states the cuadruple action
+        self.context_stack = []     # context stack to the dormant contexts
+        self.current_context = {}   # helper: the current context memory dictionary
+        self.new_context = {}       # helper: new context memory dictionary
+        self.global_context = {}    # global context directions dictionary
+        self.function_stack = []    # function name stack for return values
+        self.pointer_stack = []     # pointer stack
+        self.objects = {}           # object context dictionary
+        self.file_size = 0          # number of cuadruples
 
+    # Function that fills the cuadruple stack from walnut.obj in order to access them.
     def start(self):
         with open('walnut.obj', 'rb') as f:
             for line in f:
@@ -34,6 +35,7 @@ class VirtualMachine:
 
         self.start_program()
 
+    # Helper method that returns the marks free native element
     def clean_argument(self, arg):
         arg = arg[1:]
         if self.is_int(arg):
@@ -45,9 +47,9 @@ class VirtualMachine:
         elif arg == 'false':
             return False
         else:
-            return arg
+            return arg[1:-1]
 
-
+    # Helper method that return if a value is an integer or not.
     def is_int(self, num):
         try:
             int(num)
@@ -55,6 +57,7 @@ class VirtualMachine:
         except ValueError:
             return False
 
+    # Helper method that returns if a value is a float or not.
     def is_float(self, num):
         try:
             float(num)
@@ -62,6 +65,8 @@ class VirtualMachine:
         except ValueError:
             return False
 
+    # Helper method that obtains the context which needs to be accessed in
+    # order to obtain the correct value
     def get_id_context(self,value):
         if(value[0] == '('):
             value = value[1:-1]
@@ -75,11 +80,16 @@ class VirtualMachine:
         else:
             return self.current_context
 
+
+    # Helper method that gets the correct type of division.
     def get_division(self,left,right):
         if(self.is_int(left) and self.is_int(right)):
             return left // right
         else:
             return Decimal(left) / Decimal(right)
+
+    # Helper method that obtains the value of the memory direction
+    # you are searching form the correct context.
     def parse_side(self,value):
         if(value[0] == "%"):
             return self.clean_argument(value)
@@ -98,101 +108,131 @@ class VirtualMachine:
             else:
                 return _id
 
+    # Helper method that obtains the value of the result
     def parse_result(self,value):
-        context = self.get_id_context(value)
         if value[0] == '(':
             value = value[1:-1]
             return self.current_context[value]
         else:
             return value
 
+    # Program main function which runs the object code.
     def start_program(self):
         while self.cuadruple_pointer < self.file_size:
             next_process = self.cuadruples[self.cuadruple_pointer]
+
+            # '==' Equals comparison cuadruple command
             if next_process.operation == '10':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left == right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '!=' Not equal comparison cuadruple command
             elif next_process.operation == '11':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left != right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # 'and|&&' AND comparison cuadruple command
             elif next_process.operation == '12':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left and right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # 'or | ||' OR comparison cuadruple command
             elif next_process.operation == '13':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left or right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+            # '<=' Less or equal comparison cuadruple command
             elif next_process.operation == '14':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left <= right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '>=' Greater or equal comparison cuadruple command
             elif next_process.operation == '15':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left >= right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '<' Less than comparison cuadruple command
             elif next_process.operation == '16':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left < right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '>' Greater than comparison cuadruple command
             elif next_process.operation == '17':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left > right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '/' Division operand cuadruple command
             elif next_process.operation == '18':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = self.get_division(left,right)
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '^' Exponential operand cuadruple command
             elif next_process.operation == '19':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left ** right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '*' Multiplication operand cuadruple command
             elif next_process.operation == '20':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left * right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '+' Addition operand cuadruple command
             elif next_process.operation == '21':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left + right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '-' Substraction operand cuadruple command
             elif next_process.operation == '22':
                 right = self.parse_side(next_process.right_side)
                 left = self.parse_side(next_process.left_side)
                 res = left - right
                 context = self.get_id_context(next_process.result)
                 context[next_process.result] = res
+
+            # '=' Assignment operand cuadruple command
             elif next_process.operation == '23':
                 left = self.parse_side(next_process.left_side)
                 result = self.parse_result(next_process.result)
                 context = self.get_id_context(next_process.result)
                 context[result] = left
-            # elif next_process.operation == 24:
+
+            # 'ver' cuadruple command: Verifies that the expression
+            # is between the intended range
             elif next_process.operation == 'ver':
                 number_to_check = self.parse_side(next_process.left_side)
                 lower_limit = self.parse_side(next_process.right_side)
@@ -202,15 +242,26 @@ class VirtualMachine:
                     print("Access to the dimensioned variable is out of bounds,")
                     print("The number: " + str(number_to_check) + " expected to be between: "+str(lower_limit)+" and "+str(upper_limit))
                     sys.exit()
+
+            # 'GOTO' cuadruple command: A jump in the cuadruple linear flow.
             elif next_process.operation == 'GOTO':
                 self.cuadruple_pointer = int(next_process.result) - 1
+
+            # 'GOTOF' cuadruple command: A jump that is activated only when an expression is false.
             elif next_process.operation == 'GOTOF':
                 left = self.parse_side(next_process.left_side)
                 if not left:
                     self.cuadruple_pointer = int(next_process.result) - 1
+
+            # 'return' cuadruple command: It returns the expression given to the past context
+            # inside the key (name) of the function that called it.
             elif next_process.operation == 'return':
                 prev_context = self.context_stack[-1]
                 prev_context[self.function_stack[-1]] = self.parse_side(next_process.result)
+
+            # 'era' cuadruple command: Starts the context of the function that is being called.
+            # If a function is a method from a class, the loaded context will come from the
+            # object context rather than a new one.
             elif next_process.operation == 'era':
                 object_name = next_process.left_side
                 self.context_stack.append(self.current_context)
@@ -224,9 +275,15 @@ class VirtualMachine:
                 else:
                     self.new_context = {}
 
-                # self.context_stack.append([function_name, self.cuadruple_pointer, ])
+            # 'param' cuadruple command: Sets the parameter value in the new context before
+            # jumping to the new context.
             elif next_process.operation == 'param':
                 self.new_context[next_process.result] = self.parse_side(next_process.left_side)
+
+            # 'endproc' cuadruple command: States that the current context is about to terminate,
+            # it liberates the current context and sets the previous one as the new current and
+            # resets the cuadruple pointer to continue the past context flow.
+            # if a function is a void, it sets a dummy as a return value.
             elif next_process.operation == 'endproc':
                 prev_context = self.context_stack.pop()
                 func = self.function_stack.pop()
@@ -234,13 +291,21 @@ class VirtualMachine:
                     prev_context[func] = -1
                 self.current_context = prev_context
                 self.cuadruple_pointer = self.pointer_stack.pop()
+
+            # 'gosub' cuadruple command: States that the new context is now the current context.
+            # it stacks the current cuadruple pointer and sets the new context one.
             elif next_process.operation == 'gosub':
                 self.current_context = self.new_context
                 self.pointer_stack.append(self.cuadruple_pointer)
                 self.cuadruple_pointer = int(next_process.result) - 1
+
+            # 'puts' cuadruple command: prints the result of an expression
             elif next_process.operation == 'puts':
                 print(self.parse_side(next_process.result))
+
+            # This else states the end of the program
             else:
+                print(' ')
                 print("Program finished successfully")
 
             self.cuadruple_pointer += 1

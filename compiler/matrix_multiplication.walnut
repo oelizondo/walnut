@@ -1,23 +1,23 @@
 program matrix_multiplication;
 
 globals{
-  int mat1[5][5];
-  int mat2[5][5];
+  int X[5][5];
+  int Y[5][5];
   int result[5][5];
 }
 
 run
-  int mat1rows = 5;
-  int mat2columns = 5;
-  int mat2rows = 5;
+  int Xrows = 5;
+  int Ycolumns = 5;
+  int Yrows = 5;
 
   int aux = 0;
   int aux2 = 0;
 
   while(aux < 5){
     while(aux2 < 5){
-      mat1[aux][aux2] = aux + aux2;
-      mat2[aux][aux2] = aux + aux2;
+      X[aux][aux2] = aux + aux2;
+      Y[aux][aux2] = aux + aux2;
       result[aux][aux2] = 0;
       aux2 = aux2+1;
     }
@@ -28,23 +28,23 @@ run
   aux = 0;
   aux2 = 0;
 
-  int mat1rowcounter = 0;
-  int mat2column_counter = 0;
-  int mat2rowcounter = 0;
+  int Xrowcounter = 0;
+  int Ycolumn_counter = 0;
+  int Yrowcounter = 0;
 
-  while(mat1rowcounter < mat1rows){
+  while(Xrowcounter < Xrows){
 
-    while(mat2column_counter < mat2columns){
+    while(Ycolumn_counter < Ycolumns){
 
-      while(mat2rowcounter < mat2rows){
-        result[mat1rowcounter][mat2column_counter] = result[mat1rowcounter][mat2column_counter] + mat1[mat1rowcounter][mat2rowcounter] * mat2[mat2rowcounter][mat2column_counter];
-        mat2rowcounter = mat2rowcounter + 1;
+      while(Yrowcounter < Yrows){
+        result[Xrowcounter][Ycolumn_counter] = result[Xrowcounter][Ycolumn_counter] + X[Xrowcounter][Yrowcounter] * Y[Yrowcounter][Ycolumn_counter];
+        Yrowcounter = Yrowcounter + 1;
       }
-      mat2rowcounter = 0;
-      mat2column_counter = mat2column_counter + 1;
+      Yrowcounter = 0;
+      Ycolumn_counter = Ycolumn_counter + 1;
     }
-    mat2column_counter = 0;
-    mat1rowcounter = mat1rowcounter + 1;
+    Ycolumn_counter = 0;
+    Xrowcounter = Xrowcounter + 1;
   }
 
   aux = 0;
@@ -52,7 +52,7 @@ run
 
   puts("Printed by rows");
   while(aux < 5){
-    puts("--------");
+    puts("----Row----");
     while(aux2 < 5){
       puts(result[aux][aux2]);
       aux2 = aux2+1;

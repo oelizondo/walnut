@@ -5,6 +5,16 @@ globals{
   int cont = 0;
 }
 
+func filler() {
+  int filler = 10;
+  while(cont < 10){
+    array[cont] = filler;
+    filler = filler - 1;
+    cont = cont + 1;
+  }
+  cont = 0;
+}
+
 func print_array(){
   while(cont < 10){
     puts(array[cont]);
@@ -40,14 +50,7 @@ func sort(){
 }
 
 run
-  int filler = 10;
-  while(cont < 10){
-    array[cont] = filler;
-    filler = filler - 1;
-    cont = cont + 1;
-  }
-
-  cont = 0;
+  filler();
   sort();
   print_array();
 end
