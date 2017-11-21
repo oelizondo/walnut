@@ -16,10 +16,12 @@ func filler() {
 }
 
 func print_array(){
+  cont = 0;
   while(cont < 10){
     puts(array[cont]);
     cont = cont + 1;
   }
+  puts(" ");
 }
 
 func sort(){
@@ -51,6 +53,7 @@ func sort(){
 
 run
   filler();
+  print_array();
   sort();
   print_array();
 end
