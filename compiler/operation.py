@@ -245,7 +245,6 @@ class Operation:
             to_be_assigned = self.semantic_cube.converter[str(var['type'])]
             res_type = self.semantic_cube.semantic_cube.get((to_be_assigned, to_assign_type, 23), None)
             if res_type != None:
-                var['value'] = to_assign_value
                 self.generate_cuad(self.semantic_cube.converter['='], to_assign_value, None, var['vm_direction'])
             else:
                 print("Type Error: cannot assign the value to " + str(var['name']))
@@ -284,7 +283,7 @@ class Operation:
         to_assign_type = self.semantic_cube.converter[str(expression_type)]
         to_be_assigned = self.semantic_cube.converter[str(collection_type)]
         res_type = self.semantic_cube.semantic_cube.get((to_be_assigned, to_assign_type, 23), None)
-        
+
         if res_type == to_be_assigned:
             self.generate_cuad(self.semantic_cube.converter['='], expression, None, collection_direction)
         else:
@@ -443,6 +442,6 @@ class Operation:
     def generate_temporal(self, temporal_type):
         temporal_id = "temp" + str(self.counter)
         self.counter += 1
-        self.program_engine.register_variable(temporal_type, temporal_id, None)
+        self.program_engine.register_variable(temporal_type, temporal_id)
         temp_var = self.find_var(temporal_id)
         return temp_var

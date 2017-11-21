@@ -42,6 +42,8 @@ func fibonacci(int n) : int {
 
 run
   int fib;
-  fib = fibonacci(10000);
+  fib = fibonacci(15);
+  puts(fib);
+  fib = fibo(15);
   puts(fib);
 end

@@ -102,7 +102,7 @@ declaration_assignment : ((declaration | assignments) END_OF_STM_T)+ ;
 
 declaration : (array_declaration {structures_engine.set_next_memory_avail()}| var_declaration | object_declaration) ;
 
-array_declaration : var_type ID_T LB_T CTE_INT_T  {program_engine.register_variable($var_type.text, $ID_T.text, None, [], $CTE_INT_T.text)} {structures_engine.set_current_collection($ID_T.text)} {structures_engine.inject_cell($CTE_INT_T.text)} RB_T (matrix)? {structures_engine.fill_k()} ;
+array_declaration : var_type ID_T LB_T CTE_INT_T  {program_engine.register_variable($var_type.text, $ID_T.text, [], $CTE_INT_T.text)} {structures_engine.set_current_collection($ID_T.text)} {structures_engine.inject_cell($CTE_INT_T.text)} RB_T (matrix)? {structures_engine.fill_k()} ;
 
 matrix: LB_T CTE_INT_T {structures_engine.inject_cell($CTE_INT_T.text)} RB_T ;
 
@@ -112,7 +112,7 @@ assignments : (collection_assignment | var_assignment) ;
 
 collection_assignment : call_collection ASSIGN_T expression {operation.collection_assignment()};
 
-var_assignment : var_type ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text, None)}{operation.assign_operation($ID_T.text)}
+var_assignment : var_type ID_T ASSIGN_T expression {program_engine.register_variable($var_type.text, $ID_T.text)}{operation.assign_operation($ID_T.text)}
                 | ID_T ASSIGN_T expression {operation.assign_operation($ID_T.text)};
 
 var_type : INT_T|STRING_T|FLOAT_T|BOOLEAN_T ;
@@ -189,7 +189,7 @@ NEW_T : 'new';
 START_T : 'run' ;
 FINISH_T : 'end' ;
 PRINT_T : 'puts' ;
-OBJECT_INSTANCE_T : 'instantiate';
+
 
 EQUAL_T : '=='|'is' ;
 NOT_T : '!'|'not' ;

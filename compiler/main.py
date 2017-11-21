@@ -1,3 +1,8 @@
+# Main module:
+# This module is in charge to connect antlr4 parsed program
+# with the code that is trying to compile to be able to create
+# the object code.
+
 import sys
 from antlr4 import *
 from walnutLexer import walnutLexer
