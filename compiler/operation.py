@@ -439,6 +439,15 @@ class Operation:
         value_to_print = self.identifier_stack[-1]
         self.generate_cuad('puts',None,None,str(value_to_print))
 
+    def register_read(self, phrase, header):
+        var = self.find_var(str(header))
+        if(var['finish'] == None):
+            self.generate_cuad('read', '%'+ str(phrase), None, var['vm_direction'])
+            self.generate_cuad('parse', str(var['type']), None, var['vm_direction'])
+        else:
+            print("dimensioned array cannot have a read input.")
+            sys.exit()
+
     def generate_temporal(self, temporal_type):
         temporal_id = "temp" + str(self.counter)
         self.counter += 1

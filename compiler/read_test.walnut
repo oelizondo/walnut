@@ -1,0 +1,29 @@
+program read_test;
+
+globals{
+  int global;
+  int arr[1];
+}
+
+func modify_global(){
+  read("modify global: ", global);
+  int a;
+  read("modify global array: ", a);
+  arr[0] = a;
+}
+
+run
+
+  boolean z;
+  read("value for boolean z: ",z);
+  puts(z);
+
+  global = 1;
+  arr[0] = 0;
+  puts(global);
+  puts(arr[0]);
+  modify_global();
+  puts(global);
+  puts(arr[0]);
+
+end

@@ -64,18 +64,24 @@ blocks : expression END_OF_STM_T
          | loops
          | conditional
          | object_declaration END_OF_STM_T
-         | write ;
+         | write
+         | read ;
 
 conditional_blocks: expression END_OF_STM_T
                    | (assignments END_OF_STM_T)+
                    | loops
                    | conditional
-                   | write ;
+                   | write
+                   | read ;
 
 write : PRINT_T LP_T write_aux RP_T END_OF_STM_T;
 
 write_aux: expression {operation.register_print()} COMMA_T write_aux
           | expression {operation.register_print()};
+
+read: READ_T LP_T read_aux RP_T END_OF_STM_T;
+
+read_aux: CTE_STRING_T COMMA_T ID_T {operation.register_read($CTE_STRING_T.text, $ID_T.text)};
 
 loops : WHILE_T LP_T {jump_eng.insert_jump()} expression {operation.verify_boolean()} {jump_eng.register_conditional()} RP_T LCB_T conditional_blocks* RCB_T {jump_eng.fill_gotof()} ;
 
@@ -189,6 +195,7 @@ NEW_T : 'new';
 START_T : 'run' ;
 FINISH_T : 'end' ;
 PRINT_T : 'puts' ;
+READ_T : 'read' ;
 
 
 EQUAL_T : '=='|'is' ;

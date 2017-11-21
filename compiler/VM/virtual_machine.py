@@ -22,6 +22,7 @@ class VirtualMachine:
         self.pointer_stack = []     # pointer stack
         self.objects = {}           # object context dictionary
         self.file_size = 0          # number of cuadruples
+        self.input_value = ''
 
     # Function that fills the cuadruple stack from walnut.obj in order to access them.
     def start(self):
@@ -115,6 +116,30 @@ class VirtualMachine:
             return self.current_context[value]
         else:
             return value
+
+    def input_validation(self, var_type):
+        if var_type == 'int':
+            if not self.is_int(self.input_value):
+                print("Type error, recieved a diferent type value, expected int")
+                sys.exit()
+            else:
+                return int(self.input_value)
+        elif var_type == 'float':
+            if not self.is_float(self.input_value):
+                print("Type error, recieved a diferent type value, expected float")
+                sys.exit()
+            else:
+                return float(self.input_value)
+        elif var_type == 'boolean':
+            if self.input_value.lower() != 'true' and self.input_value.lower() != 'false':
+                print("Type error, recieved a diferent type value, expected boolean")
+                sys.exit()
+            elif self.input_value.lower() == "true":
+                return True;
+            else:
+                return False;
+        else:
+            return self.input_value
 
     # Program main function which runs the object code.
     def start_program(self):
@@ -302,6 +327,15 @@ class VirtualMachine:
             # 'puts' cuadruple command: prints the result of an expression
             elif next_process.operation == 'puts':
                 print(self.parse_side(next_process.result))
+
+            elif next_process.operation == 'read':
+                 self.input_value = str(input(self.parse_side(next_process.left_side)))
+
+            elif next_process.operation == 'parse':
+                var_type = next_process.left_side
+                value = self.input_validation(var_type)
+                context = self.get_id_context(next_process.result)
+                context[next_process.result] = value
 
             # This else states the end of the program
             else:
