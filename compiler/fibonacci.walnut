@@ -1,8 +1,0 @@
-program fibonacci;
-globals{
-int a = 6;
-float b = 6.6;
-}
-run
-  a + b;
-end

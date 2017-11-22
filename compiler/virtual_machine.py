@@ -450,8 +450,7 @@ class VirtualMachine:
 
             # This else states the end of the program
             else:
-                print(' ')
-                print("Program finished successfully")
+                sys.exit()
 
             self.cuadruple_pointer += 1
 

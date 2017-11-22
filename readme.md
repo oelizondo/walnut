@@ -1,6 +1,6 @@
 ## Walnut Compiler
 
-### Compile
+### Compile Grammar
 
 ```console
 antlr4 -Dlanguage=Python2 compiler/walnut.g4
@@ -11,6 +11,19 @@ antlr4 -Dlanguage=Python2 compiler/walnut.g4
 ```console
 cd compiler
 python main.py main.walnut
+```
+
+Using the CLI
+
+```console
+$ walnut compile example.walnut
+$ walnut run
+```
+
+Installing
+
+```console
+$ curl -L https://raw.githubusercontent.com/oelizondo/walnut/master/install.sh | sh
 ```
 
 ### Todo

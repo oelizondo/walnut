@@ -1,0 +1,13 @@
+program factorial;
+
+run
+  int f = 5;
+  int acum = 1;
+
+  while (f > 0) {
+    acum = acum * f;
+    f = f - 1;
+  }
+
+  puts(acum);
+end
