@@ -1,3 +1,13 @@
+# WalnutClass module
+# This module is individual for each class, it stores
+# the information of a walnut class, with its context
+#
+# attributes:
+#
+# name: the name of the walnut class
+# context: the context to which the class belongs
+# extends: (optional) the name of the parent class
+#
 import sys
 class WalnutClass:
     def __init__(self, name, context, extend=None):
@@ -5,7 +15,19 @@ class WalnutClass:
         self.extend = extend
         self.context = context
 
-# The parent context of any class is the global unless specified otherwise
+    # Name: register_parent_class
+    # The parent context of any class is the global unless specified otherwise
+    # This function changes the class parent context (previously global)
+    # to the one it wants to extends.
+    #
+    # parameter
+    #
+    # extends: name of the class to which the class context will now belong to.
+    #
+    # error_handle
+    #
+    # 1) returns when the class you want to extend to does not exist
+    #
     def register_parent_class(self, extend):
         global_context = self.context.parent
         parent_class = global_context.class_directory.classes.get(extend, None)

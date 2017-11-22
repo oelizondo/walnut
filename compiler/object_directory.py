@@ -52,6 +52,10 @@ class ObjectDirectory:
     #
     # class_name: class_name of the initializer method trying to be called.
     #
+    # error_handle
+    #
+    # 1) returns if the name of the first class in the declaration does not match the second.
+    #
     def validate_class_name(self, class_name):
         if self.current_class != class_name:
             print("Unexpected class name: " + str(class_name) + " in object declaration, expected: " + self.current_class)

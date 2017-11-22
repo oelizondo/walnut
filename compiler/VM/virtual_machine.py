@@ -1,3 +1,39 @@
+# VirtualMachine module
+# This module recieves the cuadruples created by the parsing of
+# the walnut program which were stored in the walnut.obj file.
+#
+# It is responsable to run the cuadruples generated in the correct
+# order, by following the flow directed by the information of the
+# cuadruples.
+#
+# helper class:
+# Cuadruple
+#   This class is used to create cuadruples and fill the cuadruple container with the information
+#   recieved from the walnut.obj file.
+#
+# VirtualMachine
+# attributes
+#
+# file: the walnut.obj file
+# cuadruples: cuadruples container
+# cuadruple_pointer: pointer that states the cuadruple action to take place
+# context_stack: stack of the dormant contexts
+# current_context: helper, the current context memory dictionary
+# new_context: helper, new context memory dictionary. This is used
+#              while changing context to fill the parameters of the function
+#              being called before sending the current context to the stack
+# global_context: global memory directions dictionary
+# function_stack: function name stack for return values, this is done to be able to
+#                 return the expression value to the previous context inside the name
+#                 of the function that was called.
+# pointer_stack: this are filled when a new context is called, it stores its current value
+#                and sets the new one to the starting point of the function that is called.
+# objects: this dictionary is used for object management, when a method is called, the context that
+#                is set is the one of the object
+# file_size: the number of cuadruples listed in the walnut.obj
+# input_value: helper attribute that has the input stream data when read cuadruple is activated.
+#
+
 from decimal import Decimal
 import sys
 
@@ -11,20 +47,22 @@ class Cuadruple:
 
 class VirtualMachine:
     def __init__(self, file):
-        self.file = file            # walnut.obj
-        self.cuadruples = []        # cuadruples container
-        self.cuadruple_pointer = 0  # pointer that states the cuadruple action
-        self.context_stack = []     # context stack to the dormant contexts
-        self.current_context = {}   # helper: the current context memory dictionary
-        self.new_context = {}       # helper: new context memory dictionary
-        self.global_context = {}    # global context directions dictionary
-        self.function_stack = []    # function name stack for return values
-        self.pointer_stack = []     # pointer stack
-        self.objects = {}           # object context dictionary
-        self.file_size = 0          # number of cuadruples
+        self.file = file
+        self.cuadruples = []
+        self.cuadruple_pointer = 0
+        self.context_stack = []
+        self.current_context = {}
+        self.new_context = {}
+        self.global_context = {}
+        self.function_stack = []
+        self.pointer_stack = []
+        self.objects = {}
+        self.file_size = 0
         self.input_value = ''
 
+    # Name: start
     # Function that fills the cuadruple stack from walnut.obj in order to access them.
+    #
     def start(self):
         with open('walnut.obj', 'rb') as f:
             for line in f:
@@ -36,7 +74,9 @@ class VirtualMachine:
 
         self.start_program()
 
-    # Helper method that returns the marks free native element
+    # Name: clean_argument
+    # Helper method that returns the marks free primitive element (constant)
+    #
     def clean_argument(self, arg):
         arg = arg[1:]
         if self.is_int(arg):
@@ -50,7 +90,13 @@ class VirtualMachine:
         else:
             return arg[1:-1]
 
+    # Name: is_int
     # Helper method that return if a value is an integer or not.
+    #
+    # parameter
+    #
+    # num: the value of the element going to be validated.
+    #
     def is_int(self, num):
         try:
             int(num)
@@ -58,7 +104,13 @@ class VirtualMachine:
         except ValueError:
             return False
 
+    # Name: is_float
     # Helper method that returns if a value is a float or not.
+    #
+    # parameter
+    #
+    # num: the value of the element going to be validated.
+    #
     def is_float(self, num):
         try:
             float(num)
@@ -66,8 +118,14 @@ class VirtualMachine:
         except ValueError:
             return False
 
+    # Name: get_id_context
     # Helper method that obtains the context which needs to be accessed in
     # order to obtain the correct value
+    #
+    # parameter
+    #
+    # value: the id that is going to be verified
+    #
     def get_id_context(self,value):
         if(value[0] == '('):
             value = value[1:-1]
@@ -81,25 +139,51 @@ class VirtualMachine:
         else:
             return self.current_context
 
-
+    # Name: get_division
     # Helper method that gets the correct type of division.
+    # Only when both values are int, a division will return an int.
+    #
+    # parameters
+    #
+    # left: the left side of the operation
+    # right: the right side of the operation
+    #
     def get_division(self,left,right):
         if(self.is_int(left) and self.is_int(right)):
             return left // right
         else:
             return Decimal(left) / Decimal(right)
 
+    # Name: parse_side
     # Helper method that obtains the value of the memory direction
-    # you are searching form the correct context.
+    # you are searching, from the correct context.
+    #
+    # parameter
+    #
+    # value: the value can be a constant, a memory location storage
+    #        or a memory direction
+    #
+    # error_handle
+    #
+    # 1) returns if a memory access does not have a value inside.
+    # 2) return if memory collection access does not have a value inside.
+    #
     def parse_side(self,value):
         if(value[0] == "%"):
             return self.clean_argument(value)
         elif value[0] == '(':
             value = value[1:-1]
             vm_direction = self.current_context[value]
+
             if(vm_direction >= 100000):
-                return self.global_context[vm_direction]
-            return self.current_context[vm_direction]
+                _id = self.global_context.get(vm_direction, None)
+            else:
+                _id = self.current_context.get(vm_direction, None)
+            if _id == None:
+                print("Operation with empty collection index. " + str(self.cuadruple_pointer))
+                sys.exit()
+            else:
+                return _id
         else:
             context = self.get_id_context(value)
             _id = context.get(value, None)
@@ -109,7 +193,15 @@ class VirtualMachine:
             else:
                 return _id
 
+    # Name: parse_result
     # Helper method that obtains the value of the result
+    # if a value is a memory direction storage, it returns what's inside.
+    #
+    # parameter
+    #
+    # value: the value can be a constant, a memory location storage
+    #        or a memory direction
+    #
     def parse_result(self,value):
         if value[0] == '(':
             value = value[1:-1]
@@ -117,6 +209,18 @@ class VirtualMachine:
         else:
             return value
 
+    # Name: input_validation
+    # This function is called from the parse cuadruple command, it validates
+    # that the input given matches with the type of the variable.
+    #
+    # parameter
+    #
+    # var_type: the type that the input is expected to be.
+    #
+    # error_handle
+    #
+    # 1) returns if an input does not match the expected type.
+    #
     def input_validation(self, var_type):
         if var_type == 'int':
             if not self.is_int(self.input_value):
@@ -141,7 +245,10 @@ class VirtualMachine:
         else:
             return self.input_value
 
-    # Program main function which runs the object code.
+    # Name: start_program
+    # Program main function which runs the object code based on the
+    # cuadruple that must be executed.
+    #
     def start_program(self):
         while self.cuadruple_pointer < self.file_size:
             next_process = self.cuadruples[self.cuadruple_pointer]
@@ -328,9 +435,13 @@ class VirtualMachine:
             elif next_process.operation == 'puts':
                 print(self.parse_side(next_process.result))
 
+            # 'read' cuadruple command: runs the input command and stores the input
+            # in the input_value attribute.
             elif next_process.operation == 'read':
                  self.input_value = str(input(self.parse_side(next_process.left_side)))
 
+            # 'parse' cuadruple command: runs a validation to dictate if it is proper
+            # to inject the input to the desired memory location.
             elif next_process.operation == 'parse':
                 var_type = next_process.left_side
                 value = self.input_validation(var_type)

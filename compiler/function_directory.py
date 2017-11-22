@@ -2,6 +2,13 @@
 # It is in charge of having the record of all the information of
 # all functions in its current context.
 #
+# attributes
+#
+# context: the context to which the function directory belongs to.
+# functions: the dictionary that contains all the information of the functions
+#            under its context.
+# last_registered: helper attribute that contains the current function that is being accessed
+#
 class FunctionDirectory:
     def __init__(self, context):
         self.context = context

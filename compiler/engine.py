@@ -38,6 +38,10 @@ class Engine:
     # dimension: if a variable is dimensioned it will recieve a empty stack
     # finish: will be the upper limit of the dimension.
     #
+    # error_handle
+    #
+    # 1) returns if a dimension limit is less or equal to than 0
+    #
     def register_variable(self, var_type, identifier, dimension=None, finish=None):
         vm_direction = self.get_next_virtual_memory()
         if(finish != None and int(finish) <= 0):
@@ -79,6 +83,10 @@ class Engine:
     # parameters
     #
     # header: the name of the new object to be registered
+    #
+    # error_handle
+    #
+    # 1) returns if an object wants to be declared under the scope of a nonexistent class.
     #
     def register_new_object(self,header):
         walnut_class = self.context.class_directory.classes.get(header,None)
@@ -160,6 +168,10 @@ class Engine:
     # function_name: the name of the function to be searched.
     # return_variable: the vm_direction of the return expression
     # return_type: variable used to match the intended return tyoe of the function and the expression
+    #
+    # error_handle
+    #
+    # 1) returns if a function name recieves a diferent type rather than the expected one.
     #
     def register_return(self, function_name, return_variable, return_type):
         function = self.current_context.parent.function_directory.functions.get(function_name)

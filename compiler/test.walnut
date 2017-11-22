@@ -1,5 +1,5 @@
 program test;
 
 run
-  puts("hola " + "adios")
+  puts("hola " + "adios");
 end
