@@ -5,17 +5,16 @@ globals{
 }
 
 func square(int a) : int {
-  c = c + 1;
   return a^2;
 }
 
 func cube(int a) : int {
-  c = c + 1;
   return a^3;
 }
+
 run
-  cube(square(cube(square(cube(3)))));
-  puts(c);
   c = cube(square(cube(square(cube(3)))));
+  puts(c);
+  c = cube(square(cube(square(cube(5)))));
   puts(c);
 end

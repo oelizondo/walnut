@@ -367,6 +367,7 @@ class Operation:
             self.generate_cuad('gosub',None,None, str(function_recieved.get("starting_point")))
         else:
             print("function" + str(header) + "does not exist")
+            sys.exit()
 
     # Name: register_parameter
     # This function is called in the declaration of a function

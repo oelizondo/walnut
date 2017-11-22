@@ -1,7 +1,0 @@
-GOTO,None,None,1
-23,%6,None,1000
-23,%6.6,None,1001
-21,1000,1001,1002
-23,1002,None,1003
-puts,None,None,1003
-endprogram,None,None,None

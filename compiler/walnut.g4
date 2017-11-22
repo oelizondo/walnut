@@ -23,7 +23,7 @@ pp = pprint.PrettyPrinter(indent=2)
 
 }
 
-program : PROGRAM_T ID_T END_OF_STM_T {program_engine.insert_first_cuad()} classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {#program_engine.print_quads()} {program_engine.write_quads()};
+program : PROGRAM_T ID_T END_OF_STM_T {program_engine.insert_first_cuad()} classes* {program_engine.reset_to_global()} global_variables? (functions {program_engine.register_end_proc()})* START_T {program_engine.register_run_proc()} blocks* FINISH_T {program_engine.register_program_end()} {program_engine.write_quads()};
 finally {exit}
 
 global_variables : GLOBALS_T LCB_T {program_engine.set_global_environment()} declaration_assignment RCB_T {program_engine.remove_global_enviroment()};
@@ -136,7 +136,7 @@ plus_minus_op : (PLUS_T | MINUS_T) ;
 
 expression : conditional_expression;
 
-conditional_expression : relational_expression {operation.compare_op()} and_or_op  {operation.operator_stack.append($and_or_op.text)} conditional_expression
+conditional_expression : relational_expression {operation.compare_op()} and_or_op {operation.operator_stack.append($and_or_op.text)} conditional_expression
                          | relational_expression {operation.compare_op()};
 
 relational_expression : math_expression {operation.compare_relational_op()} relop_tokens {operation.operator_stack.append($relop_tokens.text)} relational_expression

@@ -95,7 +95,7 @@ class Engine:
         else:
             print("Cannot instantiate object, class: " + str(header) + " does not exist")
 
-    # Name: register_return_type
+    # Name: register_function_return_type
     # This function gets a virtual memory direction for a variable that is going to be created (with the name of the function)
     # in the function directory and calls the fuction directory method to insert the return type
     # in the specified function (in the correct context, because a class method and a function can have the same name).
