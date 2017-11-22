@@ -420,7 +420,7 @@ class VirtualMachine:
                 prev_context = self.context_stack.pop()
                 func = self.function_stack.pop()
                 if(prev_context.get(func,None) == None):
-                    prev_context[func] = -1
+                    prev_context[func] = ""
                 self.current_context = prev_context
                 self.cuadruple_pointer = self.pointer_stack.pop()
 

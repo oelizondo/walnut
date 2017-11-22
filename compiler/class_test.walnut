@@ -12,7 +12,7 @@ class ClassTest {
       personal_string = c;
     }
     func doSomething() {
-      int cosa = 12434;
+      puts("This does not recieve a parameter");
     }
 
     func return_personal_string() : string {
@@ -39,17 +39,14 @@ class Test2 extends ClassTest {
     func initializer(int c, float d) {
       a = c;
       b = d;
+      personal_string = "This works too";
     }
-    func doSomething(int a, float b) : string {
-      if(a < 5) {
-      }
-      else {
-      }
-      return "string";
+    func doSomething(int a, float b) {
+      puts("This does need parameters");
     }
-    func somethingElse(int this, int that) : int {
+    func math_operation(int x, int y) : int {
       a = a + 5 + 10;
-      return a*this+that;
+      return a*x+y;
     }
 
     func get_a() : int {
@@ -61,28 +58,34 @@ class Test2 extends ClassTest {
 
 globals {
   int as = 1002;
-  Test2 obj = Test2.new(3,2.2);
-  Test2 obj4 = Test2.new(5,2.3);
-  ClassTest obj2 = ClassTest.new(1,2,"this is object 2");
-  ClassTest obj3 = ClassTest.new(3,4,"this is object 3");
-}
-
-func doThisObj1(int p1, int p3) : int {
-  return obj.somethingElse(p1,p3);
-}
-
-func doThisObj4(int p1, int p3) : int {
-  return obj4.somethingElse(p1,p3);
-}
-
-func func2(int param1, int param2, int param3) : string {
-  return "this";
-}
-
-func func3(int param2) {
-  5*5;
+  Test2 obj1 = Test2.new(3,2.2);
+  Test2 obj2 = Test2.new(5,2.3);
+  ClassTest obj3 = ClassTest.new(1,2,"this is object 2");
+  ClassTest obj4 = ClassTest.new(3,4,"this is object 3");
 }
 
 run
-  puts(doThisObj1(1,3),doThisObj4(1,3));
+  puts("");
+  puts("This is a test of object inheritance", "We will prove objects independace and function override by inheritance");
+  puts(" ");
+  puts("Declared objects are: obj1 and 2 that comes from a child class");
+  puts("obj3 and 4 come from the parent class");
+  puts("");
+  puts("Object 1 recieved initialization parameters 3 and 2.2" , "Object 2 recieved 5 and 2.3");
+  puts("If they call the same function with the same parameters that uses an attribute to do an operation", "a different value is expected");
+  puts("Test 1");
+  puts(obj1.math_operation(2,2),obj2.math_operation(2,2));
+  puts("Test end");
+  puts(" ");
+  puts("Lets try class inheritance", "obj3 comes from a parent class with a function with the same name as child class obj1");
+  puts("The difference is that obj1 method call needs parameters and obj3 method does not");
+  puts("So obj1 method call will work with the correct parameters and obj3 without");
+  puts("Test 2"):
+  puts(obj3.doSomething(),obj1.doSomething(1,5.5));
+  puts("Test end");
+  puts("Also inherited classes can call attributes from parent classes");
+  puts("so obj1 and 2 can access the attribute personal_string");
+  puts("as it was set during the initialization both will have the same value");
+  puts(obj1.return_personal_string(), obj2.return_personal_string());
+
 end
