@@ -3,8 +3,8 @@
 walnut_command=$1
 walnut_file=$2
 
-compile="python $HOME/Playground/Compiladores/walnut/compiler/main.py $PWD/$walnut_file"
-run="python $HOME/Playground/Compiladores/walnut/compiler/virtual_machine.py walnut.obj"
+compile="python $HOME/.walnut/compiler/main.py $PWD/$walnut_file"
+run="python $HOME/.walnut/compiler/virtual_machine.py walnut.obj"
 
 help() {
   echo 'Usage walnut <option>'
