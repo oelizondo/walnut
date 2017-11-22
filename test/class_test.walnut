@@ -80,9 +80,11 @@ run
   puts("Lets try class inheritance", "obj3 comes from a parent class with a function with the same name as child class obj1");
   puts("The difference is that obj1 method call needs parameters and obj3 method does not");
   puts("So obj1 method call will work with the correct parameters and obj3 without");
-  puts("Test 2"):
-  puts(obj3.doSomething(),obj1.doSomething(1,5.5));
+  puts("Test 2");
+  obj3.doSomething();
+  obj1.doSomething(1,5.5);
   puts("Test end");
+  puts(" ");
   puts("Also inherited classes can call attributes from parent classes");
   puts("so obj1 and 2 can access the attribute personal_string");
   puts("as it was set during the initialization both will have the same value");
