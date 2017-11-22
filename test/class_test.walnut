@@ -87,5 +87,4 @@ run
   puts("so obj1 and 2 can access the attribute personal_string");
   puts("as it was set during the initialization both will have the same value");
   puts(obj1.return_personal_string(), obj2.return_personal_string());
-
 end
