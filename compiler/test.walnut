@@ -1,5 +1,0 @@
-program test;
-
-run
-  puts("hola " + "adios");
-end

@@ -1,0 +1,55 @@
+#! /usr/bin/env bash
+
+walnut_command=$1
+walnut_file=$2
+
+compile="python $HOME/Playground/Compiladores/walnut/compiler/main.py $PWD/$walnut_file"
+run="python $HOME/Playground/Compiladores/walnut/compiler/virtual_machine.py walnut.obj"
+
+help() {
+  echo 'Usage walnut <option>'
+  echo '<option>'
+  echo '  compile'
+  echo '    Example'
+  echo '      walnut compile example.walnut'
+  echo '  run'
+  echo '    Example'
+  echo '      walnut run'
+  echo '  --help'
+  echo '      walnut --help'
+}
+
+compile_files() {
+  echo "Compiling $walnut_file"
+  $compile
+}
+
+run_object_file() {
+  echo 'Executing...'
+  $run
+}
+
+die() {
+  echo "$1"
+  exit
+}
+
+if [ "$walnut_command" == "compile" ]; then
+  if [ -f "$walnut_file" ]; then
+    compile_files
+    die
+  else
+    die 'Walnut file not found.'
+  fi
+elif [ "$walnut_command" == "run" ]; then
+  if [ ! -f walnut.obj ]; then
+    die 'Compile a walnut file first'
+  else
+    run_object_file
+    die
+  fi
+elif [ "$walnut_command" == "--help" ]; then
+  help
+else
+  help
+fi
