@@ -1,0 +1,42 @@
+program find;
+
+globals{
+  int array[100];
+  int cont = 0;
+}
+
+func filler() {
+  int filler = 100;
+  while(cont < 100){
+    array[cont] = filler;
+    filler = filler - 1;
+    cont = cont + 1;
+  }
+  cont = 0;
+}
+
+func find(int element) : boolean {
+  cont = 0;
+  boolean found = false;
+
+  while (cont < 99 && found == false) {
+    if (array[cont] == element) {
+      found = true;
+    } else {}
+    cont = cont + 1;
+  }
+
+  return found;
+}
+
+run
+  int elem;
+  filler();
+  read("Elemento a encontrar ", elem);
+  boolean found = find(elem);
+  if (found) {
+    puts("Encontrado!");
+  } else {
+    puts("no encontrado!");
+  }
+end

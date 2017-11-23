@@ -1,13 +1,29 @@
 program factorial;
 
-run
-  int f = 5;
+func factorial_iterativo(int n) : int{
   int acum = 1;
 
-  while (f > 0) {
-    acum = acum * f;
-    f = f - 1;
+  while (n > 0) {
+    acum = acum * n;
+    n = n - 1;
   }
 
-  puts(acum);
+  return acum;
+}
+
+func factorial(int n) : int {
+  if (n == 1) {
+    n = 1;
+  } else {
+    n = n * factorial(n - 1);
+  }
+
+  return n;
+}
+
+run
+  int n;
+  read("Numero factorial ", n);
+  puts(factorial(n));
+  puts(factorial_iterativo(n));
 end

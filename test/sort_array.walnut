@@ -1,13 +1,13 @@
 program sort_array;
 
 globals{
-  int array[10];
+  int array[100];
   int cont = 0;
 }
 
 func filler() {
-  int filler = 10;
-  while(cont < 10){
+  int filler = 100;
+  while(cont < 100){
     array[cont] = filler;
     filler = filler - 1;
     cont = cont + 1;
@@ -17,7 +17,7 @@ func filler() {
 
 func print_array(){
   cont = 0;
-  while(cont < 10){
+  while(cont < 100){
     puts(array[cont]);
     cont = cont + 1;
   }
@@ -25,7 +25,7 @@ func print_array(){
 }
 
 func sort(){
-  int top = 9;
+  int top = 99;
   int aux = 0;
   int biggest = 0;
   int position_aux = 0;

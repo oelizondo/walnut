@@ -1,0 +1,54 @@
+program fibonacci;
+
+func fibonacci_tail_aux(int a, int b, int n) : int {
+  int c;
+  if (n == 1) {
+    c = b;
+  } else {
+    c = fibonacci_tail_aux(b, a+b, n-1);
+  }
+
+  return c;
+}
+
+func fibonacci_tail(int n) : int {
+  return fibonacci_tail_aux(0, 1, n);
+}
+
+func fibonacci(int n) : int {
+  if (n <= 2) {
+    n = 1;
+  }
+  else {
+    n = fibonacci(n-1) + fibonacci(n-2);
+  }
+
+  return n;
+}
+
+func fibonacci_iterativo(int n) : int {
+  int a = 1;
+  int b = 1;
+  int acum = a + b;
+
+  while (n > 2) {
+    acum = a + b;
+    a = b;
+    b = acum;
+    n = n - 1;
+  }
+
+  return acum;
+}
+
+run
+  int n;
+  read("Numero de fibonacci ", n);
+  int fibo = fibonacci(n);
+  int fib_iter = fibonacci_iterativo(n);
+  int fib_tail = fibonacci_tail(n);
+
+  puts(fibo);
+  puts(fib_iter);
+  puts(fib_tail);
+end
