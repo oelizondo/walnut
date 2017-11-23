@@ -7,3 +7,5 @@ compiler/*.pyc
 compiler/walnut.tokens
 compiler/*.walnut
 compiler/walnut.obj
+test/walnut.obj
+walnut.obj
