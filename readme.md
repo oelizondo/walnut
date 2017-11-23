@@ -10,7 +10,7 @@ antlr4 -Dlanguage=Python2 compiler/walnut.g4
 
 ```console
 cd compiler
-python main.py main.walnut
+python main.py <source_code>.walnut
 ```
 
 Using the CLI
@@ -25,10 +25,3 @@ Installing
 ```console
 $ curl -L https://raw.githubusercontent.com/oelizondo/walnut/master/install.sh | sh
 ```
-
-### Todo
-
-* ~~Call a function~~
-* ~~Declaration (of independence) and Assignment (at the same time)~~
-* Translate variables to memory addresses.
-* Start VM

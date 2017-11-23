@@ -1,0 +1,83 @@
+program asesorias;
+
+class Horario {
+  attributes {
+    string hora;
+  }
+  methods {
+    func initializer() {}
+    func setHorario(string h) {
+      hora = h;
+    }
+    func getHora() : string {
+      return hora;
+    }
+  }
+}
+
+class Maestro {
+  attributes {
+    string nombre;
+  }
+  methods {
+    func initializer() {}
+    func getName() : string {
+      return nombre;
+    }
+    func setName(string n) {
+      nombre = n;
+    }
+  }
+}
+
+class Alumno {
+  attributes {
+    string nombre;
+  }
+  methods {
+    func initializer() {}
+    func getName() : string {
+      return nombre;
+    }
+    func setName(string n) {
+      nombre = n;
+    }
+  }
+}
+
+class Asesoria {
+  attributes {
+    Alumno alumno = Alumno.new();
+    Maestro maestro = Maestro.new();
+    Horario horario = Horario.new();
+  }
+  methods {
+    func initializer(string alumno_nombre, string maestro_nombre, string hor) {
+      alumno.setName(alumno_nombre);
+      maestro.setName(maestro_nombre);
+      horario.setHorario(hor);
+    }
+    func getInfo() {
+      puts(alumno.getName());
+      puts(maestro.getName());
+      puts(horario.getHora());
+    }
+
+    func modifyInfo(string alumno_nombre, string maestro_nombre, string hor) {
+      alumno.setName(alumno_nombre);
+      maestro.setName(maestro_nombre);
+      horario.setHorario(hor);
+    }
+  }
+}
+
+globals {
+    Asesoria a = Asesoria.new("Daniel", "Elda", "3:30 Martes");
+}
+
+run
+  a.getInfo();
+  a.modifyInfo("Oscar", "Elda", "12:30");
+  puts("");
+  a.getInfo();
+end

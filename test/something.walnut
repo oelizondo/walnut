@@ -1,0 +1,21 @@
+program something;
+
+class Algo {
+  attributes {
+    Algo a = Algo.new();
+    int count;
+  }
+  methods {
+    func initializer() {
+      count = 0;
+    }
+
+    func setCount(int i) {
+      a.setCount(i);
+    }
+  }
+}
+
+run
+  Algo b = Algo.new();
+end

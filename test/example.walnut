@@ -1,0 +1,14 @@
+program x;
+
+globals {
+  int b = 0;
+  int c;
+}
+
+run
+  int a = 0;
+  c = 10;
+  puts(a);
+  puts(b);
+  puts(c);
+end

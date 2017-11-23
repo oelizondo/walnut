@@ -1,6 +1,6 @@
 program factorial;
 
-func factorial_iterativo(int n) : int{
+func factorial_iterativo(int n) : int {
   int acum = 1;
 
   while (n > 0) {
