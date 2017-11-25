@@ -33,6 +33,7 @@ class Maestro {
 class Alumno {
   attributes {
     string nombre;
+    Maestro titular = Maestro.new();
   }
   methods {
     func initializer() {}
@@ -41,6 +42,12 @@ class Alumno {
     }
     func setName(string n) {
       nombre = n;
+    }
+    func setTitular(string n){
+      titular.setName(n);
+    }
+    func getTitular(){
+      puts(titular.getName());
     }
   }
 }
@@ -68,16 +75,46 @@ class Asesoria {
       maestro.setName(maestro_nombre);
       horario.setHorario(hor);
     }
+
+    func setTitular(string n){
+      alumno.setTitular(n);
+    }
+
+    func getTitularAlumno(){
+      alumno.getTitular();
+    }
   }
 }
 
 globals {
     Asesoria a = Asesoria.new("Daniel", "Elda", "3:30 Martes");
+    Asesoria b = Asesoria.new("Andres", "Sosa", "4:30 Poncho Alotas");
+}
+
+func getAllAsesorias(){
+  a.getInfo();
+  puts("");
+  b.getInfo();
+}
+
+func normalFunction(){
+  puts(3*5+3);
 }
 
 run
   a.getInfo();
+  puts("");
+  b.getInfo();
+  puts("");
+  b.modifyInfo("Jorge", "Elizondo", "3:30 Jueves");
+  b.getInfo();
   a.modifyInfo("Oscar", "Elda", "12:30");
   puts("");
+  a.getInfo();
+  puts("");
+  getAllAsesorias();
+  puts("","Second level immersion");
+  a.setTitular("Yolanda");
+  a.getTitularAlumno();
   a.getInfo();
 end

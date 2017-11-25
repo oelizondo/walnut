@@ -56,6 +56,7 @@ class VirtualMachine:
         self.global_context = {}
         self.function_stack = []
         self.pointer_stack = []
+        self.object_call_stack = []
         self.objects = {}
         self.file_size = 0
         self.input_value = ''
@@ -399,11 +400,20 @@ class VirtualMachine:
                 self.context_stack.append(self.current_context)
                 self.function_stack.append(next_process.result)
                 if object_name != 'None':
-                    _object = self.objects.get(object_name, None)
-                    if _object == None:
-                        self.objects[object_name] = {}
-                        _object = self.objects[object_name]
+                    if len(self.object_call_stack) > 0:
+                        _object = self.current_context.get(object_name, None)
+                        if _object != None:
+                            self.new_context = _object
+                        else:
+                            self.current_context[object_name] = {}
+                            _object = self.current_context[object_name]
+                    else:
+                        _object = self.objects.get(object_name, None)
+                        if _object == None:
+                            self.objects[object_name] = {}
+                            _object = self.objects[object_name]
                     self.new_context = _object
+                    self.object_call_stack.append(object_name)
                 else:
                     self.new_context = {}
 
@@ -423,6 +433,8 @@ class VirtualMachine:
                     prev_context[func] = ""
                 self.current_context = prev_context
                 self.cuadruple_pointer = self.pointer_stack.pop()
+                if len(self.object_call_stack) > 0:
+                    self.object_call_stack.pop()
 
             # 'gosub' cuadruple command: States that the new context is now the current context.
             # it stacks the current cuadruple pointer and sets the new context one.

@@ -1,111 +1,169 @@
-GOTO,None,None,38
-23,param1,None,1002
-23,param2,None,1003
-23,param3,None,1004
-21,1002,1003,1005
-23,1005,None,1001
-23,1004,None,1000
+GOTO,None,None,93
 endproc,None,None,None
-puts,None,None,%"This does not recieve a parameter"
+23,param1,None,1001
+23,1001,None,1000
 endproc,None,None,None
 return,None,None,1000
 endproc,None,None,None
-return,None,None,1001
+endproc,None,None,None
+return,None,None,1003
+endproc,None,None,None
+23,param1,None,1005
+23,1005,None,1003
+endproc,None,None,None
+era,titular,None,initializer
+gosub,None,None,7
+endproc,None,None,None
+return,None,None,1006
 endproc,None,None,None
 23,param1,None,1008
-23,1008,None,1000
+23,1008,None,1006
 endproc,None,None,None
-23,param1,None,1011
-23,param2,None,1012
-23,1011,None,1009
-23,1012,None,1010
-23,%"This works too",None,1000
+23,param1,None,1009
+era,titular,None,setName
+param,1009,None,param1
+gosub,None,None,10
+23,setName,None,1010
 endproc,None,None,None
-23,param1,None,1013
-23,param2,None,1014
-puts,None,None,%"This does need parameters"
-endproc,None,None,None
-23,param1,None,1015
-23,param2,None,1016
-21,1009,%5,1018
-21,1018,%10,1019
-23,1019,None,1009
-20,1009,1015,1020
-21,1020,1016,1021
-return,None,None,1021
-endproc,None,None,None
-return,None,None,1009
-endproc,None,None,None
-23,%1002,None,101023
-era,obj1,None,initializer
-param,%3,None,param1
-param,%2.2,None,param2
-gosub,None,None,17
-era,obj2,None,initializer
-param,%5,None,param1
-param,%2.3,None,param2
-gosub,None,None,17
-era,obj3,None,initializer
-param,%1,None,param1
-param,%2,None,param2
-param,%"this is object 2",None,param3
-gosub,None,None,1
-era,obj4,None,initializer
-param,%3,None,param1
-param,%4,None,param2
-param,%"this is object 3",None,param3
-gosub,None,None,1
-GOTO,None,None,58
-puts,None,None,%""
-puts,None,None,%"This is a test of object inheritance"
-puts,None,None,%"We will prove objects independace and function override by inheritance"
-puts,None,None,%" "
-puts,None,None,%"Declared objects are: obj1 and 2 that comes from a child class"
-puts,None,None,%"obj3 and 4 come from the parent class"
-puts,None,None,%""
-puts,None,None,%"Object 1 recieved initialization parameters 3 and 2.2"
-puts,None,None,%"Object 2 recieved 5 and 2.3"
-puts,None,None,%"If they call the same function with the same parameters that uses an attribute to do an operation"
-puts,None,None,%"a different value is expected"
-puts,None,None,%"Test 1"
-era,obj1,None,math_operation
-param,%2,None,param1
-param,%2,None,param2
-gosub,None,None,27
-23,math_operation,None,1024
-puts,None,None,1024
-era,obj2,None,math_operation
-param,%2,None,param1
-param,%2,None,param2
-gosub,None,None,27
-23,math_operation,None,1025
-puts,None,None,1025
-puts,None,None,%"Test end"
-puts,None,None,%" "
-puts,None,None,%"Lets try class inheritance"
-puts,None,None,%"obj3 comes from a parent class with a function with the same name as child class obj1"
-puts,None,None,%"The difference is that obj1 method call needs parameters and obj3 method does not"
-puts,None,None,%"So obj1 method call will work with the correct parameters and obj3 without"
-puts,None,None,%"Test 2"
-era,obj3,None,doSomething
+era,titular,None,getName
 gosub,None,None,8
-23,doSomething,None,1026
-era,obj1,None,doSomething
-param,%1,None,param1
-param,%5.5,None,param2
-gosub,None,None,23
-23,doSomething,None,1027
-puts,None,None,%"Test end"
-puts,None,None,%" "
-puts,None,None,%"Also inherited classes can call attributes from parent classes"
-puts,None,None,%"so obj1 and 2 can access the attribute personal_string"
-puts,None,None,%"as it was set during the initialization both will have the same value"
-era,obj1,None,return_personal_string
+23,getName,None,1011
+puts,None,None,1011
+endproc,None,None,None
+era,alumno,None,initializer
+gosub,None,None,15
+era,maestro,None,initializer
+gosub,None,None,7
+era,horario,None,initializer
+gosub,None,None,1
+23,param1,None,1012
+23,param2,None,1013
+23,param3,None,1014
+era,alumno,None,setName
+param,1012,None,param1
+gosub,None,None,18
+23,setName,None,1015
+era,maestro,None,setName
+param,1013,None,param1
 gosub,None,None,10
-23,return_personal_string,None,1028
-puts,None,None,1028
-era,obj2,None,return_personal_string
+23,setName,None,1016
+era,horario,None,setHorario
+param,1014,None,param1
+gosub,None,None,2
+23,setHorario,None,1017
+endproc,None,None,None
+era,alumno,None,getName
+gosub,None,None,16
+23,getName,None,1018
+puts,None,None,1018
+era,maestro,None,getName
+gosub,None,None,8
+23,getName,None,1019
+puts,None,None,1019
+era,horario,None,getHora
+gosub,None,None,5
+23,getHora,None,1020
+puts,None,None,1020
+endproc,None,None,None
+23,param1,None,1021
+23,param2,None,1022
+23,param3,None,1023
+era,alumno,None,setName
+param,1021,None,param1
+gosub,None,None,18
+23,setName,None,1024
+era,maestro,None,setName
+param,1022,None,param1
 gosub,None,None,10
-23,return_personal_string,None,1029
-puts,None,None,1029
+23,setName,None,1025
+era,horario,None,setHorario
+param,1023,None,param1
+gosub,None,None,2
+23,setHorario,None,1026
+endproc,None,None,None
+23,param1,None,1027
+era,alumno,None,setTitular
+param,1027,None,param1
+gosub,None,None,21
+23,setTitular,None,1028
+endproc,None,None,None
+era,alumno,None,getTitular
+gosub,None,None,27
+23,getTitular,None,1029
+endproc,None,None,None
+era,a,None,initializer
+param,%"Daniel",None,param1
+param,%"Elda",None,param2
+param,%"3:30 Martes",None,param3
+gosub,None,None,38
+era,b,None,initializer
+param,%"Andres",None,param1
+param,%"Sosa",None,param2
+param,%"4:30 Poncho Alotas",None,param3
+gosub,None,None,38
+GOTO,None,None,116
+era,a,None,getInfo
+gosub,None,None,54
+23,getInfo,None,1030
+puts,None,None,%""
+era,b,None,getInfo
+gosub,None,None,54
+23,getInfo,None,1031
+endproc,None,None,None
+20,%3,%5,1032
+21,1032,%3,1033
+puts,None,None,1033
+endproc,None,None,None
+era,a,None,getInfo
+gosub,None,None,54
+23,getInfo,None,1034
+puts,None,None,%""
+era,b,None,getInfo
+gosub,None,None,54
+23,getInfo,None,1035
+puts,None,None,%""
+era,None,None,normalFunction
+gosub,None,None,112
+23,normalFunction,None,1036
+era,b,None,modifyInfo
+param,%"Jorge",None,param1
+param,%"Elizondo",None,param2
+param,%"3:30 Jueves",None,param3
+gosub,None,None,67
+23,modifyInfo,None,1037
+era,b,None,getInfo
+gosub,None,None,54
+23,getInfo,None,1038
+era,a,None,modifyInfo
+param,%"Oscar",None,param1
+param,%"Elda",None,param2
+param,%"12:30",None,param3
+gosub,None,None,67
+23,modifyInfo,None,1039
+era,None,None,normalFunction
+gosub,None,None,112
+23,normalFunction,None,1040
+puts,None,None,%""
+era,a,None,getInfo
+gosub,None,None,54
+23,getInfo,None,1041
+puts,None,None,%""
+era,None,None,getAllAsesorias
+gosub,None,None,104
+23,getAllAsesorias,None,1042
+era,None,None,normalFunction
+gosub,None,None,112
+23,normalFunction,None,1043
+puts,None,None,%""
+puts,None,None,%"Second level immersion"
+era,a,None,setTitular
+param,%"Yolanda",None,param1
+gosub,None,None,83
+23,setTitular,None,1044
+era,a,None,getTitularAlumno
+gosub,None,None,89
+23,getTitularAlumno,None,1045
+era,a,None,getInfo
+gosub,None,None,54
+23,getInfo,None,1046
 endprogram,None,None,None
